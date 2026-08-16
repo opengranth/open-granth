@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self'; media-src 'self'">
+    <link rel="stylesheet" href="../fonts/fonts.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About · Open Granth</title>
+    <meta name="description" content="Open Granth is a markdown-first presentation of Sri Guru Granth Sahib Ji with verification and search tooling. Seva, not commerce.">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta property="og:image" content="https://opengranth.org/social-card.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Open Granth wordmark above the line Gurbani, open source, seva, and the domain opengranth.org">
+    <meta property="og:title" content="About · Open Granth">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://opengranth.org/about/">
+    <link rel="canonical" href="https://opengranth.org/about/">
+    <link rel="stylesheet" href="../style.css{% if css_version %}?v={{ css_version }}{% endif %}">
+    <script>
+    (function() {
+        var t = localStorage.getItem('og-theme');
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    })();
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-links" id="nav-menu">
+                <a href="./" class="nav-link">About</a>
+                <a href="../search/" class="nav-link">Search</a>
+                <a href="../verify/" class="nav-link">Verify</a>
+            </div>
+            <a href="../" class="nav-home">Open Granth<span class="nav-brand-mark" aria-hidden="true">&#2405;</span></a>
+            <div class="nav-right">
+                <input type="number" id="nav-ang-input" min="1" max="1430" placeholder="Ang #" aria-label="Go to ang number">
+                <button type="button" class="nav-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu" onclick="toggleMenu()">
+                    <svg class="icon-burger" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+                    <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+                    <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="about-page">
+        <header class="about-header">
+            <h1>About Open Granth</h1>
+        </header>
+
+        <div class="about-content">
+            <section>
+                <h2>What is this?</h2>
+                <p>Open Granth is a markdown-first presentation of the complete Sri Guru Granth Sahib Ji: all 1,430 angs with Gurmukhi and romanized transliteration.</p>
+                <p>On that foundation, Open Granth provides a browsable website, search, and verification tooling for AI clients and human readers alike.</p>
+                <p>This is seva. No ads, accounts, analytics cookies, or cross-site tracking. No commerce. Open Granth uses privacy-preserving aggregate traffic measurements from Cloudflare to understand site usage. It does not profile visitors or collect search or verification text. Just Gurbani, freely accessible to anyone with a web browser.</p>
+            </section>
+
+            <section>
+                <h2>Project scope</h2>
+                <p>Open Granth contains Sri Guru Granth Sahib Ji in full: all 1,430 angs, from Japji Sahib through the concluding Ragmala. It includes the bani of six Sikh Gurus, along with compositions by Bhagats, Bhatts, and other contributors. Guru Arjan Dev Ji compiled the Adi Granth in 1604; Guru Gobind Singh Ji later incorporated the bani of Guru Tegh Bahadur Ji and gave Sri Guru Granth Sahib Ji its final form.</p>
+                <p>Open Granth currently covers Sri Guru Granth Sahib Ji in its standard 1,430-ang form. It therefore does not include bani outside the scope of this release, including Jaap Sahib, Tav-Prasad Savaiye, and Benti Chaupai. This is a project-scope boundary, not a judgment on their place or importance in Sikh tradition.</p>
+            </section>
+
+            <section>
+                <h2>Why build this?</h2>
+                <p>I started using AI tools regularly, for both personal and professional work. Naturally, I began asking AI about Gurbani. <em>What does Guru Nanak Dev Ji say about ego? Which shabads speak to grief?</em></p>
+                <p>The answers I received sounded confident. They also contained verses that don't exist.</p>
+                <p>AI models can hallucinate. For most topics, a wrong answer is an inconvenience. For sacred scripture, it's something else entirely. I was reading fabricated Gurbani without realizing it. I later learned that other Sikhs had encountered the same problem.</p>
+                <p>Accuracy matters here in a way it doesn't for most things. Gurbani is Guru. Misquoting it is harmful.</p>
+                <p>Open Granth was created to address this. Every verse is stored as plain text, readable by humans and machines alike. The project includes an <strong>MCP server</strong> that lets AI tools query released source text instead of generating from memory. When an AI uses Open Granth, it can retrieve Gurbani directly from the released source files with ang and line citations instead of relying on model memory.</p>
+                <p>This is for anyone who wants to seek Naam using the tools of today, accurately and with reverence for the source.</p>
+            </section>
+
+            <section>
+                <h2>Sources and provenance</h2>
+                <p><strong>Gurmukhi text and metadata:</strong> derived from the <a href="https://github.com/shabados/database">Shabad OS database</a>.</p>
+                <p><strong>English translation:</strong> imported from the DSSK translation asset in the Shabad OS database, attributed there to Dr. Sant S. Khalsa. Included as a study aid.</p>
+                <p><strong>Romanized transliteration:</strong> mechanically generated by Open Granth as an approximate companion to the Gurmukhi. It is not an authoritative pronunciation guide. Within Open Granth, the Gurmukhi is the source layer; the Roman and English layers are reading aids.</p>
+                <p><strong>Built by Open Granth:</strong> the Markdown corpus format covering all 1,430 angs, the static website and search, the citation-first verification system, and the seven-tool MCP server.</p>
+                <p>Open Granth is an independent project. It is not affiliated with, endorsed by, or sponsored by Shabad OS or any Gurdwara, Jatha, Takht, or Sikh institution.</p>
+                <p>Provenance is kept explicit so differences between sources are auditable and it is always clear what was rendered from where. See the <a href="https://github.com/opengranth/open-granth/blob/main/NOTICE">NOTICE</a> file, the <a href="https://github.com/opengranth/open-granth/blob/main/docs/TRANSLITERATION.md">transliteration documentation</a>, and the <a href="https://github.com/opengranth/open-granth/blob/main/docs/provenance.md">detailed provenance record</a> for complete attribution.</p>
+            </section>
+
+            <section>
+                <h2>English translation</h2>
+                <p>The English layer is an imported study aid, not Open Granth's own interpretation. Open Granth will not present AI-generated interpretation as authoritative Gurbani.</p>
+                <p>Open Granth does not claim religious, scholarly, or interpretive authority. If a rights holder believes a translation passage should be corrected, reattributed, or removed, the project maintains a public takedown process.</p>
+            </section>
+
+            <section>
+                <h2>Accuracy</h2>
+                <p>This site renders its source text as faithfully as possible. If you find errors in text or transliteration, open an issue on <a href="https://github.com/opengranth/open-granth">Open Granth</a> with the ang and line numbers.</p>
+            </section>
+
+            <section>
+                <h2>Takedown</h2>
+                <p>If you are a copyright holder or authorized representative and believe any material on this site infringes your rights, see <a href="https://github.com/opengranth/open-granth/blob/main/TAKEDOWN.md">TAKEDOWN.md</a> for the request process. Good-faith requests are acknowledged promptly.</p>
+            </section>
+
+            <section>
+                <h2>Open source</h2>
+                <p>This project is fully open source. The code, the build scripts, and the rendered output are all freely available.</p>
+                <p><a href="https://github.com/opengranth/open-granth">View on GitHub</a></p>
+            </section>
+
+            <section>
+                <h2>Built by</h2>
+                <p>Open Granth was created by <strong>Satnam Singh Narang</strong> as an act of seva, in memory of his late father. Development began independently in January 2026 with one hand-built ang and grew into this complete first release. The goal: make Gurbani accessible regardless of language or technical background.</p>
+            </section>
+
+        </div>
+    </main>
+
+    <footer>
+        <p class="closing">&#2676; &#2616;&#2596;&#2623; &#2600;&#2622;&#2606;&#2625;</p>
+        <p class="attribution">{{ footer_attribution }} &middot; <a href="https://github.com/opengranth/open-granth">Open Granth</a></p>
+    </footer>
+
+    <script>
+    function setMenu(open) {
+        var nav = document.querySelector('nav');
+        var btn = document.querySelector('.nav-menu-btn');
+        nav.classList.toggle('nav-menu-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        /* Page scroll pauses while the menu is the active surface. */
+        document.documentElement.style.overflow = open ? 'hidden' : '';
+    }
+    function toggleMenu() {
+        setMenu(!document.querySelector('nav').classList.contains('nav-menu-open'));
+    }
+    document.addEventListener('click', function (e) {
+        var nav = document.querySelector('nav');
+        if (!nav.classList.contains('nav-menu-open')) return;
+        if (e.target.closest('.nav-menu-btn')) return;
+        // A tap outside the panel dismisses; selecting a link dismisses and
+        // lets the navigation proceed.
+        if (!e.target.closest('#nav-menu') || e.target.closest('.nav-link')) setMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && document.querySelector('nav').classList.contains('nav-menu-open')) {
+            setMenu(false);
+            document.querySelector('.nav-menu-btn').focus();
+        }
+    });
+    window.matchMedia('(min-width: 801px)').addEventListener('change', function (e) {
+        if (e.matches) setMenu(false);
+    });
+    function toggleTheme() {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('og-theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('og-theme', 'dark');
+        }
+    }
+    </script>
+</body>
+</html>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self'; media-src 'self'">
+    <link rel="stylesheet" href="../../fonts/fonts.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ang 100 · Open Granth</title>
+    <meta name="description" content="Ang 100 of Sri Guru Granth Sahib Ji. Guru Arjan, Raag Maajh, Raag Maajh. Gurmukhi and transliteration.">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta property="og:image" content="https://opengranth.org/social-card.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Open Granth wordmark above the line Gurbani, open source, seva, and the domain opengranth.org">
+    <meta property="og:title" content="Ang 100 · Open Granth">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://opengranth.org/ang/100/">
+    <link rel="canonical" href="https://opengranth.org/ang/100/">
+    <link rel="stylesheet" href="../../style.css">
+    <script>
+    (function() {
+        var t = localStorage.getItem('og-theme');
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    })();
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-links" id="nav-menu">
+                <a href="../../about/" class="nav-link">About</a>
+                <a href="../../search/" class="nav-link">Search</a>
+                <a href="../../verify/" class="nav-link">Verify</a>
+            </div>
+
+            <div class="nav-center">
+                <a href="../../" class="nav-home nav-home-morph" aria-label="Open Granth home">
+                    <span class="nav-home-face nav-home-label">Open Granth<span class="nav-brand-mark" aria-hidden="true">&#2405;</span></span>
+                    <span class="nav-home-face nav-home-symbol" aria-hidden="true">&#2676;</span>
+                </a>
+
+                <button type="button" class="nav-ang-context" aria-label="Scroll to top of this ang">
+                    <span class="nav-ctx-ang">Ang 100</span>
+                    <span class="nav-ctx-sep">&middot;</span>
+                    <span class="nav-ctx-author">Guru Arjan</span>
+                    <span class="nav-ctx-sep">&middot;</span>
+                    <span class="nav-ctx-raag">Raag Maajh</span>
+                </button>
+            </div>
+
+            <div class="nav-right">
+                
+                <a href="../99/" class="nav-link nav-prev" aria-label="Previous ang">&larr; 99</a>
+                
+                
+                <a href="../101/" class="nav-link nav-next" aria-label="Next ang">101 &rarr;</a>
+                
+                <input type="number" id="nav-ang-input" min="1" max="1430" placeholder="Ang #" aria-label="Go to ang number">
+                <button type="button" class="nav-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu" onclick="toggleMenu()">
+                    <svg class="icon-burger" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+                    <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+                    <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="nav-reading" aria-label="Reading position">
+            <a href="../99/" class="nav-link nav-reading-prev" aria-label="Previous ang">&larr; 99</a>
+            <span class="nav-reading-ang">Ang 100</span>
+            <a href="../101/" class="nav-link nav-reading-next" aria-label="Next ang">101 &rarr;</a>
+        </div>
+    </nav>
+
+    <main>
+        <header class="ang-header">
+            <h1>Ang 100</h1>
+            <p class="ang-meta">
+                Guru Arjan &middot; Raag Maajh
+            </p>
+        </header>
+
+        <div class="bani">
+            
+            <div class="verse" id="v1">
+                
+                <p class="gurmukhi">ਰੇਨੁ ਸੰਤਨ ਕੀ ਮੇਰੈ ਮੁਖਿ ਲਾਗੀ ॥</p>
+                
+                
+                <p class="translit">ren sa(n)tan kee merai mukh laagee ||</p>
+                
+                
+                <p class="english">I applied the dust of the feet of the Saints to my face.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v2">
+                
+                <p class="gurmukhi">ਦੁਰਮਤਿ ਬਿਨਸੀ ਕੁਬੁਧਿ ਅਭਾਗੀ ॥</p>
+                
+                
+                <p class="translit">duramat binasee kubudh abhaagee ||</p>
+                
+                
+                <p class="english">My evil-mindedness disappeared, along with my misfortune and false-mindedness.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v3">
+                
+                <p class="gurmukhi">ਸਚ ਘਰਿ ਬੈਸਿ ਰਹੇ ਗੁਣ ਗਾਏ ਨਾਨਕ ਬਿਨਸੇ ਕੂਰਾ ਜੀਉ ॥੪॥੧੧॥੧੮॥</p>
+                
+                
+                <p class="translit">sach ghar bais rahe gun gaae naanak binase kooraa jeeu ||4||11||18||</p>
+                
+                
+                <p class="english">I sit in the true home of my self; I sing His Glorious Praises. O Nanak, my falsehood has vanished! ||4||11||18||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v4">
+                
+                <p class="gurmukhi">ਮਾਝ ਮਹਲਾ ੫ ॥</p>
+                
+                
+                <p class="translit">maajh mahalaa 5 ||</p>
+                
+                
+                <p class="english">Maajh, Fifth Mehl:</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v5">
+                
+                <p class="gurmukhi">ਵਿਸਰੁ ਨਾਹੀ ਏਵਡ ਦਾਤੇ ॥</p>
+                
+                
+                <p class="translit">visar naahee evad daate ||</p>
+                
+                
+                <p class="english">I shall never forget You-You are such a Great Giver!</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v6">
+                
+                <p class="gurmukhi">ਕਰਿ ਕਿਰਪਾ ਭਗਤਨ ਸੰਗਿ ਰਾਤੇ ॥</p>
+                
+                
+                <p class="translit">kar kirapaa bhagatan sa(n)g raate ||</p>
+                
+                
+                <p class="english">Please grant Your Grace, and imbue me with the love of devotional worship.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v7">
+                
+                <p class="gurmukhi">ਦਿਨਸੁ ਰੈਣਿ ਜਿਉ ਤੁਧੁ ਧਿਆਈ ਏਹੁ ਦਾਨੁ ਮੋਹਿ ਕਰਣਾ ਜੀਉ ॥੧॥</p>
+                
+                
+                <p class="translit">dinas rain jiu tudh dhiaaee ehu daan mohi karanaa jeeu ||1||</p>
+                
+                
+                <p class="english">If it pleases You, let me meditate on You day and night; please, grant me this gift! ||1||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v8">
+                
+                <p class="gurmukhi">ਮਾਟੀ ਅੰਧੀ ਸੁਰਤਿ ਸਮਾਈ ॥</p>
+                
+                
+                <p class="translit">maatee a(n)dhee surat samaaee ||</p>
+                
+                
+                <p class="english">Into this blind clay, You have infused awareness.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v9">
+                
+                <p class="gurmukhi">ਸਭ ਕਿਛੁ ਦੀਆ ਭਲੀਆ ਜਾਈ ॥</p>
+                
+                
+                <p class="translit">sabh kichh deeaa bhaleeaa jaaee ||</p>
+                
+                
+                <p class="english">Everything, everywhere which You have given is good.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v10">
+                
+                <p class="gurmukhi">ਅਨਦ ਬਿਨੋਦ ਚੋਜ ਤਮਾਸੇ ਤੁਧੁ ਭਾਵੈ ਸੋ ਹੋਣਾ ਜੀਉ ॥੨॥</p>
+                
+                
+                <p class="translit">anad binod choj tamaase tudh bhaavai so honaa jeeu ||2||</p>
+                
+                
+                <p class="english">Bliss, joyful celebrations, wondrous plays and entertainment-whatever pleases You, comes to pass. ||2||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v11">
+                
+                <p class="gurmukhi">ਜਿਸ ਦਾ ਦਿਤਾ ਸਭੁ ਕਿਛੁ ਲੈਣਾ ॥</p>
+                
+                
+                <p class="translit">jis daa ditaa sabh kichh lainaa ||</p>
+                
+                
+                <p class="english">Everything we receive is a gift from Him</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v12">
+                
+                <p class="gurmukhi">ਛਤੀਹ ਅੰਮ੍ਰਿਤ ਭੋਜਨੁ ਖਾਣਾ ॥</p>
+                
+                
+                <p class="translit">chhateeh a(n)mrit bhojan khaanaa ||</p>
+                
+                
+                <p class="english">-the thirty-six delicious foods to eat,</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v13">
+                
+                <p class="gurmukhi">ਸੇਜ ਸੁਖਾਲੀ ਸੀਤਲੁ ਪਵਣਾ ਸਹਜ ਕੇਲ ਰੰਗ ਕਰਣਾ ਜੀਉ ॥੩॥</p>
+                
+                
+                <p class="translit">sej sukhaalee seetal pavanaa sahaj kel ra(n)g karanaa jeeu ||3||</p>
+                
+                
+                <p class="english">cozy beds, cooling breezes, peaceful joy and the experience of pleasure. ||3||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v14">
+                
+                <p class="gurmukhi">ਸਾ ਬੁਧਿ ਦੀਜੈ ਜਿਤੁ ਵਿਸਰਹਿ ਨਾਹੀ ॥</p>
+                
+                
+                <p class="translit">saa budh deejai jit visarahi naahee ||</p>
+                
+                
+                <p class="english">Give me that state of mind, by which I may not forget You.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v15">
+                
+                <p class="gurmukhi">ਸਾ ਮਤਿ ਦੀਜੈ ਜਿਤੁ ਤੁਧੁ ਧਿਆਈ ॥</p>
+                
+                
+                <p class="translit">saa mat deejai jit tudh dhiaaee ||</p>
+                
+                
+                <p class="english">Give me that understanding, by which I may meditate on You.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v16">
+                
+                <p class="gurmukhi">ਸਾਸ ਸਾਸ ਤੇਰੇ ਗੁਣ ਗਾਵਾ ਓਟ ਨਾਨਕ ਗੁਰ ਚਰਣਾ ਜੀਉ ॥੪॥੧੨॥੧੯॥</p>
+                
+                
+                <p class="translit">saas saas tere gun gaavaa ot naanak gur charanaa jeeu ||4||12||19||</p>
+                
+                
+                <p class="english">I sing Your Glorious Praises with each and every breath. Nanak takes the Support of the Guru's Feet. ||4||12||19||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v17">
+                
+                <p class="gurmukhi">ਮਾਝ ਮਹਲਾ ੫ ॥</p>
+                
+                
+                <p class="translit">maajh mahalaa 5 ||</p>
+                
+                
+                <p class="english">Maajh, Fifth Mehl:</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v18">
+                
+                <p class="gurmukhi">ਸਿਫਤਿ ਸਾਲਾਹਣੁ ਤੇਰਾ ਹੁਕਮੁ ਰਜਾਈ ॥</p>
+                
+                
+                <p class="translit">siphat saalaahan teraa hukam rajaaee ||</p>
+                
+                
+                <p class="english">To praise You is to follow Your Command and Your Will.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v19">
+                
+                <p class="gurmukhi">ਸੋ ਗਿਆਨੁ ਧਿਆਨੁ ਜੋ ਤੁਧੁ ਭਾਈ ॥</p>
+                
+                
+                <p class="translit">so giaan dhiaan jo tudh bhaaee ||</p>
+                
+                
+                <p class="english">That which pleases You is spiritual wisdom and meditation.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v20">
+                
+                <p class="gurmukhi">ਸੋਈ ਜਪੁ ਜੋ ਪ੍ਰਭ ਜੀਉ ਭਾਵੈ ਭਾਣੈ ਪੂਰ ਗਿਆਨਾ ਜੀਉ ॥੧॥</p>
+                
+                
+                <p class="translit">soee jap jo prabh jeeu bhaavai bhaanai poor giaanaa jeeu ||1||</p>
+                
+                
+                <p class="english">That which pleases God is chanting and meditation; to be in harmony with His Will is perfect spiritual wisdom. ||1||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v21">
+                
+                <p class="gurmukhi">ਅੰਮ੍ਰਿਤੁ ਨਾਮੁ ਤੇਰਾ ਸੋਈ ਗਾਵੈ ॥</p>
+                
+                
+                <p class="translit">a(n)mrit naam teraa soee gaavai ||</p>
+                
+                
+                <p class="english">He alone sings Your Ambrosial Naam,</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v22">
+                
+                <p class="gurmukhi">ਜੋ ਸਾਹਿਬ ਤੇਰੈ ਮਨਿ ਭਾਵੈ ॥</p>
+                
+                
+                <p class="translit">jo saahib terai man bhaavai ||</p>
+                
+                
+                <p class="english">Who is pleasing to Your Mind, O my Lord and Master.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v23">
+                
+                <p class="gurmukhi">ਤੂੰ ਸੰਤਨ ਕਾ ਸੰਤ ਤੁਮਾਰੇ ਸੰਤ ਸਾਹਿਬ ਮਨੁ ਮਾਨਾ ਜੀਉ ॥੨॥</p>
+                
+                
+                <p class="translit">too(n) sa(n)tan kaa sa(n)t tumaare sa(n)t saahib man maanaa jeeu ||2||</p>
+                
+                
+                <p class="english">You belong to the Saints, and the Saints belong to You. The minds of the Saints are attuned to You, O my Lord and Master. ||2||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v24">
+                
+                <p class="gurmukhi">ਤੂੰ ਸੰਤਨ ਕੀ ਕਰਹਿ ਪ੍ਰਤਿਪਾਲਾ ॥</p>
+                
+                
+                <p class="translit">too(n) sa(n)tan kee karahi pratipaalaa ||</p>
+                
+                
+                <p class="english">You cherish and nurture the Saints.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v25">
+                
+                <p class="gurmukhi">ਸੰਤ ਖੇਲਹਿ ਤੁਮ ਸੰਗਿ ਗੋਪਾਲਾ ॥</p>
+                
+                
+                <p class="translit">sa(n)t khelahi tum sa(n)g gopaalaa ||</p>
+                
+                
+                <p class="english">The Saints play with You, O Sustainer of the World.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v26">
+                
+                <p class="gurmukhi">ਅਪੁਨੇ ਸੰਤ ਤੁਧੁ ਖਰੇ ਪਿਆਰੇ ਤੂ ਸੰਤਨ ਕੇ ਪ੍ਰਾਨਾ ਜੀਉ ॥੩॥</p>
+                
+                
+                <p class="translit">apune sa(n)t tudh khare piaare too sa(n)tan ke praanaa jeeu ||3||</p>
+                
+                
+                <p class="english">Your Saints are very dear to You. You are the breath of life of the Saints. ||3||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v27">
+                
+                <p class="gurmukhi">ਉਨ ਸੰਤਨ ਕੈ ਮੇਰਾ ਮਨੁ ਕੁਰਬਾਨੇ ॥</p>
+                
+                
+                <p class="translit">un sa(n)tan kai meraa man kurabaane ||</p>
+                
+                
+                <p class="english">My mind is a sacrifice to those Saints who know You,</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v28">
+                
+                <p class="gurmukhi">ਜਿਨ ਤੂੰ ਜਾਤਾ ਜੋ ਤੁਧੁ ਮਨਿ ਭਾਨੇ ॥</p>
+                
+                
+                <p class="translit">jin too(n) jaataa jo tudh man bhaane ||</p>
+                
+                
+                <p class="english">and are pleasing to Your Mind.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v29">
+                
+                <p class="gurmukhi">ਤਿਨ ਕੈ ਸੰਗਿ ਸਦਾ ਸੁਖੁ ਪਾਇਆ ਹਰਿ ਰਸ ਨਾਨਕ ਤ੍ਰਿਪਤਿ ਅਘਾਨਾ ਜੀਉ ॥੪॥੧੩॥੨੦॥</p>
+                
+                
+                <p class="translit">tin kai sa(n)g sadaa sukh paaiaa har ras naanak tripat aghaanaa jeeu ||4||13||20||</p>
+                
+                
+                <p class="english">In their company I have found a lasting peace. Nanak is satisfied and fulfilled with the Sublime Essence of the Lord. ||4||13||20||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v30">
+                
+                <p class="gurmukhi">ਮਾਝ ਮਹਲਾ ੫ ॥</p>
+                
+                
+                <p class="translit">maajh mahalaa 5 ||</p>
+                
+                
+                <p class="english">Maajh, Fifth Mehl:</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v31">
+                
+                <p class="gurmukhi">ਤੂੰ ਜਲਨਿਧਿ ਹਮ ਮੀਨ ਤੁਮਾਰੇ ॥</p>
+                
+                
+                <p class="translit">too(n) jalanidh ham meen tumaare ||</p>
+                
+                
+                <p class="english">You are the Ocean of Water, and I am Your fish.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v32">
+                
+                <p class="gurmukhi">ਤੇਰਾ ਨਾਮੁ ਬੂੰਦ ਹਮ ਚਾਤ੍ਰਿਕ ਤਿਖਹਾਰੇ ॥</p>
+                
+                
+                <p class="translit">teraa naam boo(n)d ham chaatrik tikhahaare ||</p>
+                
+                
+                <p class="english">Your Name is the drop of water, and I am a thirsty rainbird.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v33">
+                
+                <p class="gurmukhi">ਤੁਮਰੀ ਆਸ ਪਿਆਸਾ ਤੁਮਰੀ ਤੁਮ ਹੀ ਸੰਗਿ ਮਨੁ ਲੀਨਾ ਜੀਉ ॥੧॥</p>
+                
+                
+                <p class="translit">tumaree aas piaasaa tumaree tum hee sa(n)g man leenaa jeeu ||1||</p>
+                
+                
+                <p class="english">You are my hope, and You are my thirst. My mind is absorbed in You. ||1||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v34">
+                
+                <p class="gurmukhi">ਜਿਉ ਬਾਰਿਕੁ ਪੀ ਖੀਰੁ ਅਘਾਵੈ ॥</p>
+                
+                
+                <p class="translit">jiu baarik pee kheer aghaavai ||</p>
+                
+                
+                <p class="english">Just as the baby is satisfied by drinking milk,</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v35">
+                
+                <p class="gurmukhi">ਜਿਉ ਨਿਰਧਨੁ ਧਨੁ ਦੇਖਿ ਸੁਖੁ ਪਾਵੈ ॥</p>
+                
+                
+                <p class="translit">jiu niradhan dhan dekh sukh paavai ||</p>
+                
+                
+                <p class="english">and the poor person is pleased by seeing wealth,</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v36">
+                
+                <p class="gurmukhi">ਤ੍ਰਿਖਾਵੰਤ ਜਲੁ ਪੀਵਤ ਠੰਢਾ ਤਿਉ ਹਰਿ ਸੰਗਿ ਇਹੁ ਮਨੁ ਭੀਨਾ ਜੀਉ ॥੨॥</p>
+                
+                
+                <p class="translit">trikhaava(n)t jal peevat tha(n)dhaa tiu har sa(n)g ihu man bheenaa jeeu ||2||</p>
+                
+                
+                <p class="english">and the thirsty person is refreshed by drinking cool water, so is this mind drenched with delight in the Lord. ||2||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v37">
+                
+                <p class="gurmukhi">ਜਿਉ ਅੰਧਿਆਰੈ ਦੀਪਕੁ ਪਰਗਾਸਾ ॥</p>
+                
+                
+                <p class="translit">jiu a(n)dhiaarai deepak paragaasaa ||</p>
+                
+                
+                <p class="english">Just as the darkness is lit up by the lamp,</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v38">
+                
+                <p class="gurmukhi">ਭਰਤਾ ਚਿਤਵਤ ਪੂਰਨ ਆਸਾ ॥</p>
+                
+                
+                <p class="translit">bharataa chitavat pooran aasaa ||</p>
+                
+                
+                <p class="english">and the hopes of the wife are fulfilled by thinking about her husband,</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v39">
+                
+                <p class="gurmukhi">ਮਿਲਿ ਪ੍ਰੀਤਮ ਜਿਉ ਹੋਤ ਅਨੰਦਾ ਤਿਉ ਹਰਿ ਰੰਗਿ ਮਨੁ ਰੰਗੀਨਾ ਜੀਉ ॥੩॥</p>
+                
+                
+                <p class="translit">mil preetam jiu hot ana(n)daa tiu har ra(n)g man ra(n)geenaa jeeu ||3||</p>
+                
+                
+                <p class="english">and people are filled with bliss upon meeting their beloved, so is my mind imbued with the Lord's Love. ||3||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v40">
+                
+                <p class="gurmukhi">ਸੰਤਨ ਮੋ ਕਉ ਹਰਿ ਮਾਰਗਿ ਪਾਇਆ ॥</p>
+                
+                
+                <p class="translit">sa(n)tan mo kau har maarag paaiaa ||</p>
+                
+                
+                <p class="english">The Saints have set me upon the Lord's Path.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v41">
+                
+                <p class="gurmukhi">ਸਾਧ ਕ੍ਰਿਪਾਲਿ ਹਰਿ ਸੰਗਿ ਗਿਝਾਇਆ ॥</p>
+                
+                
+                <p class="translit">saadh kripaal har sa(n)g gijhaaiaa ||</p>
+                
+                
+                <p class="english">By the Grace of the Holy Saint, I have been attuned to the Lord.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v42">
+                
+                <p class="gurmukhi">ਹਰਿ ਹਮਰਾ ਹਮ ਹਰਿ ਕੇ ਦਾਸੇ ਨਾਨਕ ਸਬਦੁ ਗੁਰੂ ਸਚੁ ਦੀਨਾ ਜੀਉ ॥੪॥੧੪॥੨੧॥</p>
+                
+                
+                <p class="translit">har hamaraa ham har ke daase naanak sabad guroo sach deenaa jeeu ||4||14||21||</p>
+                
+                
+                <p class="english">The Lord is mine, and I am the slave of the Lord. O Nanak, the Guru has blessed me with the True Word of the Shabad. ||4||14||21||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v43">
+                
+                <p class="gurmukhi">ਮਾਝ ਮਹਲਾ ੫ ॥</p>
+                
+                
+                <p class="translit">maajh mahalaa 5 ||</p>
+                
+                
+                <p class="english">Maajh, Fifth Mehl:</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v44">
+                
+                <p class="gurmukhi">ਅੰਮ੍ਰਿਤ ਨਾਮੁ ਸਦਾ ਨਿਰਮਲੀਆ ॥</p>
+                
+                
+                <p class="translit">a(n)mrit naam sadaa niramaleeaa ||</p>
+                
+                
+                <p class="english">The Ambrosial Naam, the Name of the Lord, is eternally pure.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v45">
+                
+                <p class="gurmukhi">ਸੁਖਦਾਈ ਦੂਖ ਬਿਡਾਰਨ ਹਰੀਆ ॥</p>
+                
+                
+                <p class="translit">sukhadaaee dookh bidaaran hareeaa ||</p>
+                
+                
+                <p class="english">The Lord is the Giver of Peace and the Dispeller of sorrow.</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+            <div class="verse" id="v46">
+                
+                <p class="gurmukhi">ਅਵਰਿ ਸਾਦ ਚਖਿ ਸਗਲੇ ਦੇਖੇ ਮਨ ਹਰਿ ਰਸੁ ਸਭ ਤੇ ਮੀਠਾ ਜੀਉ ॥੧॥</p>
+                
+                
+                <p class="translit">avar saad chakh sagale dekhe man har ras sabh te meethaa jeeu ||1||</p>
+                
+                
+                <p class="english">I have seen and tasted all other flavors, but to my mind, the Subtle Essence of the Lord is the sweetest of all. ||1||</p>
+                
+                <button class="verse-link" aria-label="Copy link to this verse"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button>
+            </div>
+            
+        </div>
+    </main>
+
+    <button type="button" class="back-to-top" aria-label="Back to top">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 14 12 8 18 14"/></svg>
+    </button>
+
+    <nav class="page-turns" aria-label="Page navigation">
+        
+        <a href="../99/" class="page-turn page-turn-prev" aria-label="Go to ang 99">&larr; Ang 99</a>
+        
+        
+        <a href="../101/" class="page-turn page-turn-next" aria-label="Go to ang 101">Ang 101 &rarr;</a>
+        
+    </nav>
+
+    <div class="toast" id="toast">Link copied</div>
+    <footer>
+        <p class="closing">&#2676; &#2616;&#2596;&#2623; &#2600;&#2622;&#2606;&#2625;</p>
+        <p class="attribution">
+            Source: Shabad OS Database &middot; 
+            <a href="https://github.com/opengranth/open-granth"><span class="nav-brand-mark" aria-hidden="true">&#2676;&nbsp;</span>Open Granth</a>
+        </p>
+    </footer>
+
+    <script>
+    function setMenu(open) {
+        var nav = document.querySelector('nav');
+        var btn = document.querySelector('.nav-menu-btn');
+        nav.classList.toggle('nav-menu-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        /* Page scroll pauses while the menu is the active surface. */
+        document.documentElement.style.overflow = open ? 'hidden' : '';
+    }
+    function toggleMenu() {
+        setMenu(!document.querySelector('nav').classList.contains('nav-menu-open'));
+    }
+    document.addEventListener('click', function (e) {
+        var nav = document.querySelector('nav');
+        if (!nav.classList.contains('nav-menu-open')) return;
+        if (e.target.closest('.nav-menu-btn')) return;
+        // A tap outside the panel dismisses; selecting a link dismisses and
+        // lets the navigation proceed.
+        if (!e.target.closest('#nav-menu') || e.target.closest('.nav-link')) setMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && document.querySelector('nav').classList.contains('nav-menu-open')) {
+            setMenu(false);
+            document.querySelector('.nav-menu-btn').focus();
+        }
+    });
+    window.matchMedia('(min-width: 801px)').addEventListener('change', function (e) {
+        if (e.matches) setMenu(false);
+    });
+    function toggleTheme() {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('og-theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('og-theme', 'dark');
+        }
+    }
+    document.getElementById('nav-ang-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            var n = parseInt(this.value, 10);
+            if (n >= 1 && n <= 1430) window.location.href = '../' + n + '/';
+        }
+    });
+    document.querySelectorAll('.verse').forEach(function(verse) {
+        verse.addEventListener('click', function(e) {
+            if (window.getSelection().toString()) return;
+            if (e.target.closest('.verse-link')) return;
+            history.replaceState(null, '', '#' + verse.id);
+        });
+    });
+    document.querySelectorAll('.verse-link').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var verse = btn.closest('.verse');
+            var url = window.location.origin + window.location.pathname + '#' + verse.id;
+            history.replaceState(null, '', '#' + verse.id);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(function() {
+                    var toast = document.getElementById('toast');
+                    toast.classList.add('show');
+                    setTimeout(function() { toast.classList.remove('show'); }, 2000);
+                });
+            }
+        });
+    });
+    /* Ang context in sticky nav after scrolling past the page header.
+       Clicking the context scrolls back to the header, which in turn triggers
+       the observer to hide the context again. */
+    (function() {
+        var nav = document.querySelector('nav');
+        var angHeader = document.querySelector('.ang-header');
+        var angContext = document.querySelector('.nav-ang-context');
+        if (!nav || !angHeader || !('IntersectionObserver' in window)) return;
+        var backToTop = document.querySelector('.back-to-top');
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    nav.classList.remove('nav-has-ang-context');
+                    if (backToTop) backToTop.classList.remove('show');
+                } else {
+                    nav.classList.add('nav-has-ang-context');
+                    if (backToTop) backToTop.classList.add('show');
+                }
+            });
+        }, { rootMargin: '-60px 0px 0px 0px', threshold: 0 });
+        observer.observe(angHeader);
+        if (angContext) {
+            angContext.addEventListener('click', function() {
+                /* True top of page, not scrollIntoView on the header; that
+                   aligns the header under the sticky nav and stops ~50px
+                   short, hiding the header padding. */
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+        if (backToTop) {
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+    })();
+
+    document.addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT') return;
+        if (e.key === 'ArrowLeft' || e.key === 'h') {
+            var prev = document.querySelector('.nav-prev');
+            if (prev) prev.click();
+        }
+        if (e.key === 'ArrowRight' || e.key === 'l') {
+            var next = document.querySelector('.nav-next');
+            if (next) next.click();
+        }
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1085 @@
+/* ═══════════════════════════════════════════════
+   Open Granth: Sacred Modernism
+
+   Typography: Plus Jakarta Sans (UI / English)
+               Noto Sans Gurmukhi (sacred text)
+   ═══════════════════════════════════════════════ */
+
+/* ── Light Theme ── */
+:root {
+    --bg:            #FAFAF8;
+    --bg-surface:    #F0EEEA;
+    --bg-nav:        rgba(250, 250, 248, 0.88);
+    --text:          #1B1B1A;
+    --text-secondary:#5F5E5B;
+    --text-tertiary: #96948F;
+    --accent:        #B8860B;
+    --accent-hover:  #9A7009;
+    --accent-soft:   rgba(184, 134, 11, 0.06);
+    --border:        #E3E0DA;
+    --border-light:  #ECEAE4;
+    --gurmukhi-color:#1B1B1A;
+    --verse-hover:   rgba(184, 134, 11, 0.025);
+    --shadow-nav:    0 1px 0 var(--border);
+    --radius:        8px;
+    --content-width: 680px;
+    --page-px:       1.5rem;
+}
+
+/* ── Dark Theme ── */
+[data-theme="dark"] {
+    --bg:            #171615;
+    --bg-surface:    #201F1D;
+    --bg-nav:        rgba(23, 22, 21, 0.9);
+    --text:          #EAEAE8;
+    --text-secondary:#9C9A96;
+    --text-tertiary: #6B6966;
+    --accent:        #D4A84B;
+    --accent-hover:  #E0BB6A;
+    --accent-soft:   rgba(212, 168, 75, 0.08);
+    --border:        #2C2A27;
+    --border-light:  #242220;
+    --gurmukhi-color:#F4F4F2;
+    --verse-hover:   rgba(212, 168, 75, 0.03);
+    --shadow-nav:    0 1px 0 var(--border);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ── Base ── */
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+a:hover { color: var(--accent-hover); }
+
+::selection {
+    background: var(--accent-soft);
+    color: var(--text);
+}
+
+/* ═══════════════════════════════════════════════
+   Navigation
+   ═══════════════════════════════════════════════ */
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-nav);
+    transition: background-color 0.3s ease;
+}
+
+.nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0.625rem var(--page-px);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.nav-links {
+    flex: 1;
+}
+
+.nav-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.nav-link {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+}
+
+.nav-link:hover { color: var(--text); }
+
+.nav-links {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Center cluster: nav-home and nav-ang-context live inside here so they
+   behave as a single composed unit, not two siblings being pulled apart by
+   the flex:1 on .nav-links and .nav-right. */
+.nav-center {
+    /* Non-shrinking: when space runs out the flex:1 sides give way instead.
+       A shrinking center with justify-content:center spills its overflow
+       symmetrically, pushing the symbol left over the nav links. */
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    gap: 0.5rem;
+}
+
+.nav-home {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Ang pages only. Grid with a single cell: both faces (English label and
+   symbol) occupy grid-area 1/1 and are crossfaded via opacity. The container
+   sizes itself to the wider face, so swapping doesn't jump layout.
+   place-items centers both faces so the smaller glyph sits mid-box. */
+.nav-home-morph {
+    display: inline-grid;
+    place-items: center;
+    line-height: 1;
+}
+
+.nav-home:hover { color: var(--accent); }
+
+.nav-home-face {
+    grid-area: 1 / 1;
+    line-height: 1;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+}
+
+.nav-home-label {
+    max-width: 12rem;
+    overflow: hidden;
+    transition: opacity 0.25s ease, max-width 0.2s ease;
+}
+
+.nav-home-symbol {
+    opacity: 0;
+    color: var(--accent);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* Collapse the hidden wordmark face so the morphed nav-home shrinks to the
+   symbol's width instead of reserving the full "Open Granth" width. */
+nav.nav-has-ang-context .nav-home-label { opacity: 0; max-width: 0; }
+nav.nav-has-ang-context .nav-home-symbol { opacity: 1; }
+
+/* ── Ang-page sticky-nav context morph ──
+   When the page's main ang-header scrolls out of view, the nav-home label is
+   replaced by a compact ang context ("Ang N · Author · Raag"). Driven by an
+   IntersectionObserver on .ang-header that toggles .nav-has-ang-context on
+   <nav>. Transition is max-width + opacity on both elements, so the swap
+   flows smoothly without a layout jump. */
+.nav-ang-context {
+    font-family: inherit;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 0;
+    min-width: 0;
+    opacity: 0;
+    flex-shrink: 1;
+    pointer-events: none;
+    /* Close: fade content out first (0.15s), then collapse container (0.2s).
+       Open: expand container first (0.2s), then fade content in (0.15s) at delay.
+       Staggering prevents the reveal-wipe "snap" from content being clipped
+       while the container is still growing. */
+    transition: max-width 0.2s ease, opacity 0.15s ease, color 0.15s ease;
+    /* Button reset */
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    text-align: left;
+}
+
+.nav-ang-context:hover { color: var(--text); }
+
+.nav-ang-context .nav-ctx-sep {
+    color: var(--text-tertiary);
+    margin: 0 0.4rem;
+}
+
+
+nav.nav-has-ang-context .nav-ang-context {
+    max-width: 560px;
+    /* "Ang 1430" must never disappear; author/raag may truncate after it. */
+    min-width: 4.5rem;
+    opacity: 1;
+    pointer-events: auto;
+    /* Open: container expands first (0.2s), then content fades in (0.2s delayed
+       by 0.15s). Close inherits the base transition: content fades first, then
+       container collapses. */
+    transition: max-width 0.2s ease, opacity 0.2s ease 0.15s, color 0.15s ease;
+}
+
+@media (max-width: 640px) {
+    /* Cap the context at the space that is actually free beside the links,
+       symbol, and controls (~306px of fixed content) so the controls never
+       get pushed off-viewport. min-width keeps "Ang N" visible; the
+       ellipsis eats author/raag first. */
+    nav.nav-has-ang-context .nav-ang-context {
+        max-width: min(360px, calc(100vw - 306px));
+    }
+}
+
+/* ── Compact navigation (up to 800px) ──
+   Brand + menu + theme on the top row, page links in an expandable panel,
+   and a dedicated reading row on ang pages. The menu icon is a hamburger
+   with an accessible label; the dodandi stays scripture punctuation. */
+.nav-menu-btn {
+    display: none;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+}
+.nav-menu-btn svg { width: 16px; height: 16px; stroke: var(--text-secondary); stroke-width: 2; stroke-linecap: round; fill: none; }
+.nav-menu-btn .icon-close { display: none; }
+nav.nav-menu-open .nav-menu-btn .icon-burger { display: none; }
+nav.nav-menu-open .nav-menu-btn .icon-close { display: block; }
+.nav-menu-btn:hover { border-color: var(--accent); }
+.nav-menu-btn:hover svg { stroke: var(--accent); }
+.nav-brand-mark { display: inline; margin-left: 0.4rem; color: var(--accent); font-size: 1.0625rem; }
+.nav-reading { display: none; }
+
+@media (max-width: 800px) {
+    .nav-menu-btn { display: flex; }
+    #nav-ang-input { display: none; }
+    .nav-prev, .nav-next { display: none; }
+    .nav-ang-context,
+    nav.nav-has-ang-context .nav-ang-context { display: none; }
+
+    /* Brand on the left, controls on the right. */
+    .nav-inner { justify-content: space-between; }
+    .nav-center { order: -1; flex: 0 0 auto; }
+    .nav-right { flex: 0 0 auto; }
+
+    /* Ang pages: both brand faces side by side, symbol first. The sticky
+       morph is disabled here; the reading row carries the ang number. */
+    /* The label face carries the brand mark itself, so the morph symbol
+       face is redundant on compact. */
+    .nav-home-symbol { display: none; }
+    .nav-home-label,
+    nav.nav-has-ang-context .nav-home-label { opacity: 1; max-width: none; }
+
+    /* The page links become the expandable menu panel. */
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        /* Fully opaque: scripture must not show through the open menu. */
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        padding: 0.25rem var(--page-px) 0.5rem;
+    }
+    nav.nav-menu-open .nav-links { display: flex; }
+    /* While the menu is open the whole header reads as one solid sheet;
+       the translucent blur returns when it closes. */
+    nav.nav-menu-open {
+        background: var(--bg);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+    /* Scrim: dim the page beneath the open menu so the panel reads as the
+       only active surface. z-index -1 keeps it under the nav's own
+       children while the nav's stacking context lifts it above the page. */
+    nav.nav-menu-open::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: rgba(0, 0, 0, 0.35);
+    }
+    .nav-links .nav-link { padding: 0.625rem 0; font-size: 0.9375rem; border-top: 1px solid var(--border-light); }
+    .nav-links .nav-link:first-child { border-top: none; }
+
+    /* Reading row on ang pages. */
+    .nav-reading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0.375rem var(--page-px) 0.5rem;
+        border-top: 1px solid var(--border-light);
+        font-size: 0.8125rem;
+    }
+    .nav-reading-ang { font-weight: 600; color: var(--text); }
+    .nav-reading-prev, .nav-reading-next { min-width: 3rem; }
+    .nav-reading-next { text-align: right; }
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.theme-toggle:hover { border-color: var(--text-tertiary); }
+
+.theme-toggle svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: var(--text-tertiary);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.theme-toggle .icon-moon { display: none; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+/* Ang Search */
+.nav-right input[type="number"] {
+    width: 56px;
+    padding: 0.25rem 0.5rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    text-align: center;
+    transition: border-color 0.15s ease;
+    -moz-appearance: textfield;
+}
+
+.nav-right input[type="number"]::-webkit-inner-spin-button,
+.nav-right input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+.nav-right input[type="number"]:focus { outline: none; border-color: var(--accent); }
+.nav-right input[type="number"]::placeholder { color: var(--text-tertiary); font-weight: 400; }
+
+/* ═══════════════════════════════════════════════
+   Main Content
+   ═══════════════════════════════════════════════ */
+
+main {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 0 var(--page-px);
+    width: 100%;
+    flex: 1;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════
+   Home Page
+   ═══════════════════════════════════════════════ */
+
+.home { padding-top: 4rem; padding-bottom: 3rem; }
+
+.home-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.home-ek-onkar {
+    font-family: 'Noto Sans Gurmukhi', sans-serif;
+    font-size: 2.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 1.25rem;
+}
+
+.home-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.home-subtitle {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    margin-bottom: 1rem;
+}
+
+.home-desc {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+    line-height: 1.65;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.home-verify-cta {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    margin-top: 1.75rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--accent-soft);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+.home-verify-cta:hover {
+    border-color: var(--accent);
+    background: var(--bg-surface);
+}
+.home-verify-cta-text {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--accent);
+}
+.home-verify-cta-text::after {
+    content: " \2192";
+}
+.home-verify-cta-sub {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+}
+
+.search-hint,
+.verify-hint a,
+.search-hint a {
+    color: var(--text-tertiary);
+}
+.search-hint {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    margin-top: -0.5rem;
+    margin-bottom: 1.5rem;
+}
+.search-hint a,
+.verify-hint a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.search-hint a:hover,
+.verify-hint a:hover { color: var(--accent-hover); }
+
+
+/* ── Section Label ── */
+.section-note {
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+    margin: -0.375rem 0 0.875rem;
+}
+
+.section-note a { color: var(--text-tertiary); text-decoration: underline; }
+
+.section-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-tertiary);
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.625rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ── Bani Cards ── */
+.banis {
+    margin-bottom: 2.5rem;
+}
+
+.bani-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.bani-card {
+    display: block;
+    padding: 0.875rem 1rem;
+    background: var(--bg-surface);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: all 0.15s ease;
+}
+
+.bani-card:hover {
+    border-color: var(--border);
+    background: var(--accent-soft);
+}
+
+.bani-card:hover .bani-name { color: var(--accent); }
+
+.bani-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text);
+    display: block;
+    margin-bottom: 0.125rem;
+    transition: color 0.15s ease;
+}
+
+.bani-ang {
+    font-size: 0.6875rem;
+    color: var(--text-tertiary);
+    font-weight: 500;
+}
+
+/* ── Raag Sections ── */
+.sections { margin-bottom: 3rem; }
+
+.section-list {
+    list-style: none;
+}
+
+.section-list li {
+    border-bottom: 1px solid var(--border-light);
+}
+
+.section-list li:last-child { border-bottom: none; }
+
+.section-list li a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.15s ease;
+}
+
+.section-list li a:hover { color: var(--accent); }
+
+.section-range {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════════
+   Ang Page
+   ═══════════════════════════════════════════════ */
+
+.ang-header {
+    text-align: center;
+    padding: 2.5rem 0 1.75rem;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.ang-header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+}
+
+.ang-meta {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--text-tertiary);
+}
+
+
+/* ── Verses ── */
+.bani {
+    display: flex;
+    flex-direction: column;
+}
+
+.verse {
+    position: relative;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+    transition: background-color 0.15s ease;
+}
+
+.verse:last-child { border-bottom: none; }
+
+.verse:hover { background: var(--verse-hover); cursor: pointer; }
+
+/* ── Verse Link Icon ── */
+.verse-link {
+    position: absolute;
+    top: 1.75rem;
+    right: 0;
+    background: none;
+    border: none;
+    padding: 0.375rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.verse:hover .verse-link { opacity: 0.4; }
+.verse-link:hover { opacity: 1 !important; }
+
+.verse-link svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: var(--text-tertiary);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.verse-link:hover svg { stroke: var(--accent); }
+
+.verse:target {
+    background: var(--accent-soft);
+    border-radius: var(--radius);
+    margin: 0 -0.75rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    scroll-margin-top: 4rem;
+}
+
+/* ── Toast ── */
+.toast {
+    position: fixed;
+    top: 3.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(-0.5rem);
+    background: var(--text);
+    color: var(--bg);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 200;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.gurmukhi {
+    font-family: 'Noto Sans Gurmukhi', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.8;
+    color: var(--gurmukhi-color);
+    margin-bottom: 0.5rem;
+}
+
+.translit {
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    font-style: italic;
+    margin-bottom: 0.25rem;
+    line-height: 1.5;
+}
+
+.english {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* ═══════════════════════════════════════════════
+   Footer
+   ═══════════════════════════════════════════════ */
+
+footer {
+    max-width: var(--content-width);
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
+    padding: 2.5rem var(--page-px) 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.closing {
+    font-family: 'Noto Sans Gurmukhi', sans-serif;
+    font-size: 0.9375rem;
+    color: var(--accent);
+    margin-bottom: 0.375rem;
+}
+
+.attribution {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--text-tertiary);
+    letter-spacing: 0.02em;
+}
+
+.attribution a {
+    color: var(--text-tertiary);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 2px;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.attribution a:hover {
+    color: var(--accent);
+    text-decoration-color: var(--accent);
+}
+
+/* ═══════════════════════════════════════════════
+   Bottom Page-Turns
+   ═══════════════════════════════════════════════ */
+
+.page-turns {
+    /* The global `nav` rule is sticky for the top bar; this bottom nav
+       must opt out or it glues to the viewport top when scrolled past. */
+    position: static;
+    background: none;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 1rem;
+    max-width: var(--content-width);
+    margin: 0 auto;
+    padding: 2rem var(--page-px) 1rem;
+    border-top: 1px solid var(--border-light);
+}
+
+/* The global `nav` rule is sticky for the top bar; this bottom nav must
+   opt out or it glues itself to the viewport top when scrolled past. */
+/* Same visual language as .bani-card: quiet surface, border on hover,
+   gold reserved for the text. Compact: a continuation, not a card. */
+.page-turn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0.625rem 1.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg-surface);
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.page-turn:hover {
+    border-color: var(--border);
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.page-turn-placeholder {
+    flex: 1;
+    min-width: 100px;
+}
+
+.back-to-top {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 40;
+}
+
+.back-to-top.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.back-to-top svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.back-to-top:hover {
+    border-color: var(--accent);
+}
+
+@media (max-width: 640px) {
+    /* Smaller and slightly translucent so it obscures less text while
+       scrolling on narrow viewports. */
+    .back-to-top { width: 38px; height: 38px; right: 1rem; bottom: 1rem; }
+    .back-to-top.show { opacity: 0.85; }
+    .back-to-top.show:active { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════
+   Search Page
+   ═══════════════════════════════════════════════ */
+
+.search-page { padding-top: 2.5rem; padding-bottom: 3rem; }
+
+.search-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.search-header h1 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+}
+
+.search-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+}
+
+.search-box {
+    margin-bottom: 1.5rem;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    transition: border-color 0.15s ease;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.search-box input::placeholder {
+    color: var(--text-tertiary);
+}
+
+.search-box input:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.search-status {
+    font-size: 0.8125rem;
+    color: var(--text-tertiary);
+    margin-bottom: 0.5rem;
+}
+
+.search-results {
+    display: flex;
+    flex-direction: column;
+}
+
+.search-result {
+    display: block;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border-light);
+    text-decoration: none;
+    color: var(--text);
+    transition: background-color 0.15s ease;
+}
+
+.search-result:last-child { border-bottom: none; }
+
+.search-result:hover { background: var(--verse-hover); }
+
+.search-result .gurmukhi {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 0.375rem;
+}
+
+.search-result .translit {
+    margin-bottom: 0.125rem;
+}
+
+.search-result mark {
+    background: var(--accent-soft);
+    color: var(--text);
+    padding: 0.0625rem 0.125rem;
+    border-radius: 2px;
+}
+
+.result-meta {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: 0.375rem;
+}
+
+.search-empty {
+    text-align: center;
+    color: var(--text-tertiary);
+    font-size: 0.9375rem;
+    padding: 2rem 0;
+}
+
+/* ═══════════════════════════════════════════════
+   About Page
+   ═══════════════════════════════════════════════ */
+
+/* Longhand on purpose: the shorthand's horizontal 0 would override the
+   horizontal padding that main provides, leaving mobile edge-to-edge. */
+.about-page { padding-top: 2.5rem; padding-bottom: 3rem; }
+
+.about-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.about-header h1 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.about-content section { margin-bottom: 2rem; }
+
+.about-content h2 {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-tertiary);
+    margin-bottom: 0.625rem;
+}
+
+.about-content p {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 0.625rem;
+}
+
+.about-content p:last-child { margin-bottom: 0; }
+
+.about-content strong { color: var(--text); font-weight: 600; }
+.about-content em { color: var(--text); }
+
+.about-content a {
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 2px;
+}
+
+.about-content a:hover { text-decoration-color: var(--accent); }
+
+
+/* ═══════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+    :root { --page-px: 1.25rem; }
+
+    .home { padding-top: 3rem; }
+    .home-header h1 { font-size: 1.5rem; }
+    .home-ek-onkar { font-size: 2.25rem; }
+    .bani-grid { grid-template-columns: 1fr; }
+
+    .nav-inner { padding: 0.5rem var(--page-px); }
+    .nav-link { font-size: 0.75rem; }
+
+    .gurmukhi { font-size: 1.25rem; }
+    .verse { padding: 1.5rem 0; }
+
+    .section-list li a { font-size: 0.8125rem; }
+    .section-range { font-size: 0.6875rem; }
+
+    .ang-header { padding: 2rem 0 1.5rem; }
+}
+
+
+@media (max-width: 400px) {
+    .gurmukhi { font-size: 1.125rem; line-height: 1.7; }
+}
+
+/* ═══════════════════════════════════════════════
+   Print
+   ═══════════════════════════════════════════════ */
+
+@media print {
+    nav, .theme-toggle { display: none; }
+    body { background: white; color: black; }
+    .gurmukhi { color: black; }
+    .translit { color: #666; }
+    .english { color: #333; }
+    .verse { break-inside: avoid; }
+}

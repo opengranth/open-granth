@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self'; media-src 'self'">
+    <link rel="stylesheet" href="../fonts/fonts.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search · Open Granth</title>
+    <meta name="description" content="Search Sri Guru Granth Sahib Ji by Gurmukhi or transliteration.">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta property="og:image" content="https://opengranth.org/social-card.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Open Granth wordmark above the line Gurbani, open source, seva, and the domain opengranth.org">
+    <meta property="og:title" content="Search · Open Granth">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://opengranth.org/search/">
+    <link rel="canonical" href="https://opengranth.org/search/">
+    <link rel="stylesheet" href="../style.css{% if css_version %}?v={{ css_version }}{% endif %}">
+    <script>
+    (function() {
+        var t = localStorage.getItem('og-theme');
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    })();
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-links" id="nav-menu">
+                <a href="../about/" class="nav-link">About</a>
+                <a href="./" class="nav-link">Search</a>
+                <a href="../verify/" class="nav-link">Verify</a>
+            </div>
+            <a href="../" class="nav-home">Open Granth<span class="nav-brand-mark" aria-hidden="true">&#2405;</span></a>
+            <div class="nav-right">
+                <input type="number" id="nav-ang-input" min="1" max="1430" placeholder="Ang #" aria-label="Go to ang number">
+                <button type="button" class="nav-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu" onclick="toggleMenu()">
+                    <svg class="icon-burger" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+                    <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+                    <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="search-page">
+        <header class="search-header">
+            <h1>Search</h1>
+            <p class="search-subtitle" id="search-subtitle">Loading&#8230;</p>
+        </header>
+
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Try &quot;waheguru&quot;, &quot;naam&quot;, &quot;hukam&quot;, &quot;ik oankaar&quot;..." autocomplete="off" disabled>
+        </div>
+
+        <p class="search-hint">Search finds verses by keyword, including rough romanized wording. If you have a specific quote and want to check whether it appears in the released source files, use <a href="../verify/">Verify</a>.</p>
+
+        <p id="search-status" class="search-status"></p>
+        <div id="results" class="search-results"></div>
+    </main>
+
+    <footer>
+        <p class="attribution">{{ footer_attribution }} &middot; <a href="https://github.com/opengranth/open-granth">Open Granth</a></p>
+    </footer>
+
+    <script>
+    /* ── Theme toggle ── */
+    function setMenu(open) {
+        var nav = document.querySelector('nav');
+        var btn = document.querySelector('.nav-menu-btn');
+        nav.classList.toggle('nav-menu-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        /* Page scroll pauses while the menu is the active surface. */
+        document.documentElement.style.overflow = open ? 'hidden' : '';
+    }
+    function toggleMenu() {
+        setMenu(!document.querySelector('nav').classList.contains('nav-menu-open'));
+    }
+    document.addEventListener('click', function (e) {
+        var nav = document.querySelector('nav');
+        if (!nav.classList.contains('nav-menu-open')) return;
+        if (e.target.closest('.nav-menu-btn')) return;
+        // A tap outside the panel dismisses; selecting a link dismisses and
+        // lets the navigation proceed.
+        if (!e.target.closest('#nav-menu') || e.target.closest('.nav-link')) setMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && document.querySelector('nav').classList.contains('nav-menu-open')) {
+            setMenu(false);
+            document.querySelector('.nav-menu-btn').focus();
+        }
+    });
+    window.matchMedia('(min-width: 801px)').addEventListener('change', function (e) {
+        if (e.matches) setMenu(false);
+    });
+    function toggleTheme() {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('og-theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('og-theme', 'dark');
+        }
+    }
+
+    /* ── Ang nav ── */
+    document.getElementById('nav-ang-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            var n = parseInt(this.value, 10);
+            if (n >= 1 && n <= 1430) window.location.href = '../ang/' + n + '/';
+        }
+    });
+
+    /* ── Search ──
+       Data source: verses.json generated by build_site.py from the selected corpus source.
+       All verse content is trusted (not user-supplied).
+       User input (search query) is HTML-escaped via esc() before rendering.
+    */
+    var verses = [];
+    var searchInput = document.getElementById('search-input');
+    var resultsDiv = document.getElementById('results');
+    var statusEl = document.getElementById('search-status');
+    var subtitleEl = document.getElementById('search-subtitle');
+    var timer;
+    var STOP_WORDS = {
+        a: true, an: true, and: true, are: true, as: true, at: true, be: true,
+        but: true, by: true, for: true, from: true, has: true, have: true,
+        he: true, her: true, hers: true, him: true, his: true, i: true,
+        in: true, is: true, it: true, its: true, me: true, my: true,
+        of: true, on: true, or: true, our: true, ours: true, she: true,
+        so: true, that: true, the: true, their: true, theirs: true,
+        them: true, they: true, this: true, to: true, us: true,
+        was: true, we: true, were: true, with: true, you: true,
+        your: true, yours: true
+    };
+    var PROFANE_WORDS = {
+        fuck: true, fucks: true, fucked: true, fucking: true,
+        fucker: true, fuckers: true, motherfucker: true, motherfuckers: true,
+        fuk: true, fuks: true, fck: true,
+        shit: true, shits: true, shitty: true, bullshit: true, bullshits: true,
+        dipshit: true, dipshits: true, horseshit: true,
+        bitch: true, bitches: true, bitching: true, biatch: true,
+        ass: true, asshole: true, assholes: true,
+        cunt: true, cunts: true
+    };
+    var PROFANE_COLLAPSED_WORDS = {};
+    Object.keys(PROFANE_WORDS).forEach(function(word) {
+        if (word !== 'ass') PROFANE_COLLAPSED_WORDS[word] = true;
+    });
+
+    function esc(s) {
+        if (!s) return '';
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function highlight(text, query) {
+        if (!query || !text) return esc(text);
+        var safe = esc(text);
+        var safeQ = esc(query).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return safe.replace(new RegExp('(' + safeQ + ')', 'gi'), '<mark>$1</mark>');
+    }
+
+    function stem(word) {
+        if (word.length <= 3) return word;
+        if (/ies$/.test(word) && word.length > 4) return word.slice(0, -3) + 'y';
+        var suffixes = ['ering', 'ness', 'ment', 'tion', 'sion', 'ious', 'eous',
+            'ting', 'ing', 'ful', 'ous', 'ble', 'ers', 'est', 'ier', 'ely',
+            'ens', 'ern', 'er', 'ed', 'ly', 'en', 'es', 'al', 'ty'];
+        for (var i = 0; i < suffixes.length; i++) {
+            var suffix = suffixes[i];
+            if (word.endsWith(suffix) && word.length - suffix.length >= 3) {
+                return word.slice(0, -suffix.length);
+            }
+        }
+        if (word.endsWith('s') && !word.endsWith('ss') && word.length > 4) {
+            return word.slice(0, -1);
+        }
+        return word;
+    }
+
+    function searchWords(text) {
+        var raw = (text || '').toLowerCase().match(/[a-z]+/g) || [];
+        var words = [];
+        for (var i = 0; i < raw.length; i++) {
+            if (!STOP_WORDS[raw[i]]) words.push(stem(raw[i]));
+        }
+        return words;
+    }
+
+    function containsProfaneWords(text) {
+        var raw = (text || '').toLowerCase().match(/[a-z0-9@#$!|*_.-]+/g) || [];
+        var tokens = [];
+        for (var i = 0; i < raw.length; i++) {
+            var normalized = normalizeProfaneToken(raw[i]);
+            if (!normalized) continue;
+            tokens.push(normalized);
+            if (PROFANE_WORDS[normalized]) return true;
+            var collapsed = normalized.replace(/(.)\1+/g, '$1');
+            if (PROFANE_COLLAPSED_WORDS[collapsed]) return true;
+        }
+
+        for (var start = 0; start < tokens.length; start++) {
+            var joined = '';
+            for (var j = start; j < Math.min(start + 12, tokens.length); j++) {
+                if (tokens[j].length !== 1) break;
+                joined += tokens[j];
+                if (PROFANE_WORDS[joined]) return true;
+                var collapsedJoined = joined.replace(/(.)\1+/g, '$1');
+                if (PROFANE_COLLAPSED_WORDS[collapsedJoined]) return true;
+            }
+        }
+        return false;
+    }
+
+    function normalizeProfaneToken(token) {
+        return (token || '')
+            .replace(/[@4]/g, 'a')
+            .replace(/[$5]/g, 's')
+            .replace(/[!1|]/g, 'i')
+            .replace(/0/g, 'o')
+            .replace(/3/g, 'e')
+            .replace(/7/g, 't')
+            .replace(/[^a-z]/g, '');
+    }
+
+    function inOrderBonus(queryWords, verseWords) {
+        if (queryWords.length < 2) return 0;
+        var pos = -1;
+        var matched = 0;
+        for (var i = 0; i < queryWords.length; i++) {
+            var found = -1;
+            for (var j = pos + 1; j < verseWords.length; j++) {
+                if (verseWords[j] === queryWords[i]) {
+                    found = j;
+                    break;
+                }
+            }
+            if (found === -1) continue;
+            pos = found;
+            matched++;
+        }
+        if (matched === queryWords.length) return 3;
+        if (matched >= 2) return 1;
+        return 0;
+    }
+
+    function scoreVerse(v, q, ql, queryWords) {
+        var english = (v.english || '').toLowerCase();
+        var translit = (v.transliteration || '').toLowerCase();
+        if (english.indexOf(ql) !== -1 || translit.indexOf(ql) !== -1 || (v.gurmukhi || '').indexOf(q) !== -1) {
+            return 1000;
+        }
+        /* Word spacing varies between transliteration conventions (the corpus
+           writes "ikOankaar" where readers type "ik oankaar"), so retry the
+           phrase match with spaces removed on both sides. */
+        var translitSquashed = translit.replace(/ /g, '');
+        if (ql.indexOf(' ') !== -1 && translitSquashed.indexOf(ql.replace(/ /g, '')) !== -1) {
+            return 1000;
+        }
+        if (queryWords.length === 0) return 0;
+
+        var verseWords = searchWords((v.english || '') + ' ' + (v.transliteration || ''));
+        var seen = {};
+        for (var i = 0; i < verseWords.length; i++) seen[verseWords[i]] = true;
+
+        var matched = 0;
+        for (var j = 0; j < queryWords.length; j++) {
+            /* A word also counts if it appears inside the space-squashed
+               transliteration, so "oankaar" finds "ikOankaar" and "satnaam"
+               finds "sat naam". */
+            if (seen[queryWords[j]] || (queryWords[j].length >= 4 && translitSquashed.indexOf(queryWords[j]) !== -1)) matched++;
+        }
+        if (matched === 0) return 0;
+        if (queryWords.length > 1 && matched < queryWords.length) return 0;
+        return (matched * 10) + inOrderBonus(queryWords, verseWords);
+    }
+
+    function renderResults(matches, q) {
+        if (matches.length === 0) {
+            var empty = document.createElement('p');
+            empty.className = 'search-empty';
+            empty.textContent = 'No verses found. Try different words or check spelling.';
+            resultsDiv.textContent = '';
+            resultsDiv.appendChild(empty);
+            return;
+        }
+
+        /* Build DOM nodes (not innerHTML) for safety */
+        var frag = document.createDocumentFragment();
+        for (var j = 0; j < matches.length; j++) {
+            var m = matches[j];
+            var link = document.createElement('a');
+            link.href = '../ang/' + m.ang + '/' + (m.verse_index ? '#v' + m.verse_index : '');
+            link.className = 'search-result';
+
+            if (m.gurmukhi) {
+                var g = document.createElement('p');
+                g.className = 'gurmukhi';
+                // Display-only: keep a danda glued to its last word on narrow screens.
+                g.textContent = m.gurmukhi.replace(/ ॥/g, '\u00a0॥');
+                link.appendChild(g);
+            }
+            if (m.transliteration) {
+                var t = document.createElement('p');
+                t.className = 'translit';
+                /* highlight uses esc() internally; safe for mark tags */
+                t.innerHTML = highlight(m.transliteration, q);
+                link.appendChild(t);
+            }
+            var e = document.createElement('p');
+            e.className = 'english';
+            e.innerHTML = highlight(m.english, q);
+            link.appendChild(e);
+
+            var meta = document.createElement('p');
+            meta.className = 'result-meta';
+            meta.textContent = 'Ang ' + m.ang + ' \u2014 ' + m.author;
+            link.appendChild(meta);
+
+            frag.appendChild(link);
+        }
+        resultsDiv.textContent = '';
+        resultsDiv.appendChild(frag);
+    }
+
+    /* Common spellings mapped to the corpus transliteration scheme. Keep this
+       list short and verified against the corpus; every value must actually
+       occur in verses.json. */
+    var QUERY_ALIASES = {
+        'waheguru': 'vaahiguroo',
+        'vaheguru': 'vaahiguroo',
+        'vahiguru': 'vaahiguroo',
+        'satnam': 'sat naam'
+    };
+
+    function applyAliases(ql) {
+        var words = ql.split(/\s+/);
+        for (var i = 0; i < words.length; i++) {
+            if (QUERY_ALIASES[words[i]]) words[i] = QUERY_ALIASES[words[i]];
+        }
+        return words.join(' ');
+    }
+
+    function doSearch() {
+        var q = searchInput.value.trim();
+        var ql = applyAliases(q.toLowerCase());
+
+        /* Update URL */
+        var url = new URL(window.location);
+        if (q) { url.searchParams.set('q', q); } else { url.searchParams.delete('q'); }
+        history.replaceState(null, '', url);
+
+        if (ql.length < 2) {
+            resultsDiv.textContent = '';
+            statusEl.textContent = ql.length === 1 ? 'Type at least 2 characters' : '';
+            return;
+        }
+        if (containsProfaneWords(q)) {
+            resultsDiv.textContent = '';
+            statusEl.textContent = 'Search input contains language that is not suitable for Gurbani search.';
+            return;
+        }
+
+        var queryWords = searchWords(ql);
+        var scored = [];
+        for (var i = 0; i < verses.length; i++) {
+            var v = verses[i];
+            var score = scoreVerse(v, q, ql, queryWords);
+            if (score > 0) scored.push({ score: score, verse: v });
+        }
+        scored.sort(function(a, b) {
+            if (b.score !== a.score) return b.score - a.score;
+            if (a.verse.ang !== b.verse.ang) return a.verse.ang - b.verse.ang;
+            return (a.verse.verse_index || 0) - (b.verse.verse_index || 0);
+        });
+
+        var matches = scored.slice(0, 50).map(function(item) { return item.verse; });
+
+        statusEl.textContent = scored.length > 50
+            ? '50+ results (showing first 50)'
+            : matches.length + ' result' + (matches.length !== 1 ? 's' : '');
+
+        renderResults(matches, q);
+    }
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(timer);
+        timer = setTimeout(doSearch, 200);
+    });
+
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            clearTimeout(timer);
+            doSearch();
+        }
+    });
+
+    /* ── Load data ── */
+    fetch('../data/verses.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            verses = data;
+            if (!Array.isArray(verses) || verses.length === 0) {
+                subtitleEl.textContent = 'Search is not available for this build yet.';
+                statusEl.textContent = 'Browse by ang in the meantime. Search returns when English readings are added to this release.';
+                searchInput.disabled = true;
+                return;
+            }
+
+            subtitleEl.textContent = verses.length.toLocaleString() + ' searchable verses, Gurmukhi and transliteration';
+            searchInput.disabled = false;
+            searchInput.focus();
+
+            /* Pick up ?q= from URL */
+            var params = new URLSearchParams(window.location.search);
+            var q = params.get('q');
+            if (q) {
+                searchInput.value = q;
+                doSearch();
+            }
+        })
+        .catch(function() {
+            subtitleEl.textContent = 'Failed to load verse data';
+            subtitleEl.style.color = 'var(--accent)';
+        });
+    </script>
+</body>
+</html>

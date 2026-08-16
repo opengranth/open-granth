@@ -1,0 +1,11 @@
+# Direct Python dependencies. Compile the complete hash-locked graph with:
+# uv pip compile requirements.in --python-version 3.14 --exclude-newer 2026-08-05T23:59:59Z --generate-hashes --output-file requirements.txt
+mcp==1.28.1
+PyYAML==6.0.3
+pytest==9.0.3
+Jinja2==3.1.6
+
+# Minimum-age quarantine constraints verified on 2026-08-12.
+pydantic-settings==2.14.2
+starlette==1.4.1
+typing-inspection==0.4.2

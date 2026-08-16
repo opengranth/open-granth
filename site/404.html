@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self'; media-src 'self'">
+    <link rel="stylesheet" href="/fonts/fonts.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found · Open Granth</title>
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="/style.css">
+    <script>
+    (function() {
+        var t = localStorage.getItem('og-theme');
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    })();
+    </script>
+    <style>
+        .notfound-page {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 3rem 1.5rem;
+        }
+        .notfound-brand {
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 1.75rem;
+            letter-spacing: -0.01em;
+            margin-bottom: 1.5rem;
+        }
+        .notfound-brand .nav-brand-mark { font-size: 1.5rem; }
+        .notfound-page h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .notfound-page p {
+            color: var(--text-secondary);
+            font-size: 0.9375rem;
+            max-width: 34rem;
+            margin-bottom: 1.75rem;
+        }
+        .notfound-links {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.9375rem;
+        }
+        .notfound-links a { color: var(--accent); text-decoration: none; }
+        .notfound-links a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    </style>
+</head>
+<body>
+    <main class="notfound-page">
+        <div class="notfound-brand">Open Granth<span class="nav-brand-mark" aria-hidden="true">&#2405;</span></div>
+        <h1>Page not found</h1>
+        <p>This page does not exist. If you followed a link to an ang, check the number. Angs are numbered 1 through 1430.</p>
+        <div class="notfound-links" role="navigation" aria-label="Site links">
+            <a href="/">Home</a>
+            <a href="/search/">Search</a>
+            <a href="/verify/">Verify</a>
+        </div>
+    </main>
+</body>
+</html>

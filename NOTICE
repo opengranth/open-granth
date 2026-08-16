@@ -1,0 +1,93 @@
+Open Granth
+Copyright (c) 2025-2026 Satnam Singh Narang
+
+This is an independent, non-commercial, open-source project.
+It is not affiliated with, endorsed by, or sponsored by any
+upstream data provider or Sikh institution, including Shabad
+OS or any Gurdwara, Jatha, or Takht.
+
+DATA ATTRIBUTION (FIRST RELEASE)
+
+The public build of Open Granth is rendered from a
+corpus derived from the Shabad OS database
+(https://github.com/shabados/database).
+
+The first release of Open Granth includes:
+
+  - Gurmukhi text and metadata imported from Shabad OS data
+  - Romanized transliteration generated locally by Open Granth
+  - English translation imported from the DSSK translation asset
+    in the Shabad OS database, attributed there to Dr. Sant S.
+    Khalsa, publication date 2013-03
+
+The English layer is an imported study aid. It is not
+Open Granth's own interpretation.
+Within Open Granth, the Gurmukhi is the source layer;
+the Roman and English layers are reading aids.
+
+Open Granth does not claim copyright over Gurbani text
+or third-party translation text included from upstream sources.
+
+SCOPE
+
+The first release provides:
+  - Gurmukhi corpus (all 1,430 angs)
+  - Romanized transliteration
+  - DSSK English translation for study
+  - Static browsable site
+  - Verification tool (citation-first)
+  - MCP server for AI clients
+
+The first release does not provide:
+  - AI-generated interpretation presented as authoritative
+  - Any claim of religious or scholarly authority
+
+Open Granth does not claim religious, scholarly, or
+interpretive authority.
+
+THIRD-PARTY LICENSES
+
+The Shabad OS database is licensed under the MIT License.
+Its copyright and permission notice is reproduced here as
+that license requires:
+
+  MIT License
+
+  Copyright (c) Shabad OS Organization and Contributors
+
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated
+  documentation files (the "Software"), to deal in the
+  Software without restriction, including without limitation
+  the rights to use, copy, modify, merge, publish, distribute,
+  sublicense, and/or sell copies of the Software, and to
+  permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+
+  The above copyright notice and this permission notice shall
+  be included in all copies or substantial portions of the
+  Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+  KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+  WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+  PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
+  OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+  OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+TAKEDOWN
+
+If you are a rights holder (or authorized representative)
+and believe any material in this project infringes your
+rights, see TAKEDOWN.md for the request process. Good-faith
+requests are acknowledged promptly.
+
+CONTACT
+
+  Satnam Singh Narang
+  contact@opengranth.org
+
+Corrections, clarifications, or removal requests will be
+addressed promptly and respectfully.

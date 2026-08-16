@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self'; media-src 'self'">
+    <link rel="stylesheet" href="../fonts/fonts.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify a Gurbani Quote · Open Granth</title>
+    <meta name="description" content="Check whether a Gurmukhi, romanized, or English quote appears in Open Granth's released Sri Guru Granth Sahib Ji source files.">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta property="og:image" content="https://opengranth.org/social-card.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Open Granth wordmark above the line Gurbani, open source, seva, and the domain opengranth.org">
+    <meta property="og:title" content="Verify a Gurbani Quote · Open Granth">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="Check whether a Gurmukhi, romanized, or English quote appears in Open Granth's released Sri Guru Granth Sahib Ji source files.">
+    <meta property="og:url" content="https://opengranth.org/verify/">
+    <link rel="canonical" href="https://opengranth.org/verify/">
+    <link rel="stylesheet" href="../style.css">
+    <script>
+    (function() {
+        var t = localStorage.getItem('og-theme');
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    })();
+    </script>
+    <style>
+        .verify-page { padding-top: 2.5rem; padding-bottom: 3rem; }
+
+        .verify-header { text-align: center; margin-bottom: 1.5rem; }
+        .verify-header h1 {
+            font-size: 1.375rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+        .verify-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-tertiary);
+        }
+
+        .verify-box { margin-bottom: 1rem; }
+        .verify-box textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.75rem 1rem;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Gurmukhi', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            resize: vertical;
+            transition: border-color 0.15s ease;
+        }
+        .verify-box textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .verify-box textarea::placeholder { color: var(--text-tertiary); }
+        .verify-box textarea:disabled { opacity: 0.5; cursor: wait; }
+
+        .verify-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .verify-btn {
+            padding: 0.625rem 1.5rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .verify-btn:hover { background: var(--accent-hover); }
+        .verify-btn:disabled { opacity: 0.5; cursor: wait; }
+
+        .verify-clear {
+            padding: 0.625rem 1rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            background: none;
+            color: var(--text-tertiary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+        .verify-clear:hover { color: var(--text); border-color: var(--text-tertiary); }
+
+        .verify-hint {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            line-height: 1.5;
+            margin-top: -0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* ── Result States ── */
+        .verify-result { display: none; margin-bottom: 2rem; }
+        .verify-result.show { display: block; }
+
+        .result-banner {
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.25rem;
+        }
+
+        .result-banner.verified {
+            background: rgba(34, 139, 34, 0.08);
+            border: 1px solid rgba(34, 139, 34, 0.2);
+        }
+        .result-banner.partial {
+            background: rgba(184, 134, 11, 0.08);
+            border: 1px solid rgba(184, 134, 11, 0.2);
+        }
+        .result-banner.not-found {
+            background: rgba(180, 40, 40, 0.08);
+            border: 1px solid rgba(180, 40, 40, 0.2);
+        }
+
+        [data-theme="dark"] .result-banner.verified {
+            background: rgba(34, 139, 34, 0.12);
+            border-color: rgba(34, 139, 34, 0.3);
+        }
+        [data-theme="dark"] .result-banner.partial {
+            background: rgba(212, 168, 75, 0.1);
+            border-color: rgba(212, 168, 75, 0.25);
+        }
+        [data-theme="dark"] .result-banner.not-found {
+            background: rgba(200, 60, 60, 0.1);
+            border-color: rgba(200, 60, 60, 0.25);
+        }
+
+        .result-status {
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        .verified .result-status { color: #228B22; }
+        .partial .result-status { color: var(--accent); }
+        .not-found .result-status { color: #B42828; }
+
+        [data-theme="dark"] .verified .result-status { color: #5CBF5C; }
+        [data-theme="dark"] .not-found .result-status { color: #E06060; }
+
+        .result-message {
+            font-size: 0.8125rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .result-verse {
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .result-verse:last-child { border-bottom: none; }
+
+        .result-verse .gurmukhi { font-size: 1.25rem; line-height: 1.6; margin-bottom: 0.375rem; }
+        .result-verse .translit { margin-bottom: 0.125rem; }
+
+        .result-passage-line {
+            margin-bottom: 1.25rem;
+        }
+        .result-passage-line:last-of-type {
+            margin-bottom: 0;
+        }
+        .result-passage-line .english {
+            margin-bottom: 0;
+        }
+
+        .result-verse-meta {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-top: 0.375rem;
+        }
+
+        .result-verse-meta a {
+            color: var(--accent);
+            text-decoration: underline;
+            text-decoration-color: var(--border);
+            text-underline-offset: 2px;
+        }
+        .result-verse-meta a:hover { text-decoration-color: var(--accent); }
+
+        .result-similarity {
+            display: inline-block;
+            font-size: 0.6875rem;
+            font-weight: 600;
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+            background: var(--bg-surface);
+            color: var(--text-tertiary);
+            margin-left: 0.5rem;
+        }
+
+        .matches-label {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-tertiary);
+            margin-bottom: 0.5rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-links" id="nav-menu">
+                <a href="../about/" class="nav-link">About</a>
+                <a href="../search/" class="nav-link">Search</a>
+                <a href="./" class="nav-link">Verify</a>
+            </div>
+            <a href="../" class="nav-home">Open Granth<span class="nav-brand-mark" aria-hidden="true">&#2405;</span></a>
+            <div class="nav-right">
+                <input type="number" id="nav-ang-input" min="1" max="1430" placeholder="Ang #" aria-label="Go to ang number">
+                <button type="button" class="nav-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu" onclick="toggleMenu()">
+                    <svg class="icon-burger" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+                    <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+                    <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="verify-page">
+        <header class="verify-header">
+            <h1>Verify Gurbani</h1>
+            <p class="verify-subtitle" id="verify-subtitle">Loading verses...</p>
+        </header>
+
+        <div class="verify-box">
+            <textarea id="verify-input" placeholder="Paste Gurbani in Gurmukhi, transliteration, or an exact English translation phrase. Gurmukhi is most reliable." maxlength="500" disabled></textarea>
+        </div>
+
+        <div class="verify-actions">
+            <button class="verify-btn" id="verify-btn" onclick="doVerify()" disabled>Verify</button>
+            <button class="verify-clear" onclick="clearResult()">Clear</button>
+        </div>
+        <p class="verify-hint">Gurmukhi is the most reliable input. English verification requires a longer exact translation phrase. For keywords or rough wording, use <a href="../search/">Search</a>.</p>
+
+        <div class="verify-result" id="verify-result">
+            <div class="result-banner" id="result-banner">
+                <p class="result-status" id="result-status"></p>
+                <p class="result-message" id="result-message"></p>
+            </div>
+            <div id="result-verses"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p class="attribution">Source text derived from Shabad OS data &middot; <a href="https://github.com/opengranth/open-granth">Open Granth</a></p>
+    </footer>
+
+    <script>
+    /* ── Theme toggle ── */
+    function setMenu(open) {
+        var nav = document.querySelector('nav');
+        var btn = document.querySelector('.nav-menu-btn');
+        nav.classList.toggle('nav-menu-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        /* Page scroll pauses while the menu is the active surface. */
+        document.documentElement.style.overflow = open ? 'hidden' : '';
+    }
+    function toggleMenu() {
+        setMenu(!document.querySelector('nav').classList.contains('nav-menu-open'));
+    }
+    document.addEventListener('click', function (e) {
+        var nav = document.querySelector('nav');
+        if (!nav.classList.contains('nav-menu-open')) return;
+        if (e.target.closest('.nav-menu-btn')) return;
+        // A tap outside the panel dismisses; selecting a link dismisses and
+        // lets the navigation proceed.
+        if (!e.target.closest('#nav-menu') || e.target.closest('.nav-link')) setMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && document.querySelector('nav').classList.contains('nav-menu-open')) {
+            setMenu(false);
+            document.querySelector('.nav-menu-btn').focus();
+        }
+    });
+    window.matchMedia('(min-width: 801px)').addEventListener('change', function (e) {
+        if (e.matches) setMenu(false);
+    });
+    function toggleTheme() {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('og-theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('og-theme', 'dark');
+        }
+    }
+
+    /* ── Ang nav ── */
+    document.getElementById('nav-ang-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            var n = parseInt(this.value, 10);
+            if (n >= 1 && n <= 1430) window.location.href = '../ang/' + n + '/';
+        }
+    });
+
+    /* ── Verification Engine ── */
+    var verses = [];
+    var input = document.getElementById('verify-input');
+    var btn = document.getElementById('verify-btn');
+    var resultDiv = document.getElementById('verify-result');
+    var bannerDiv = document.getElementById('result-banner');
+    var statusEl = document.getElementById('result-status');
+    var messageEl = document.getElementById('result-message');
+    var versesDiv = document.getElementById('result-verses');
+    var subtitleEl = document.getElementById('verify-subtitle');
+    var PROFANE_WORDS = {
+        fuck: true, fucks: true, fucked: true, fucking: true,
+        fucker: true, fuckers: true, motherfucker: true, motherfuckers: true,
+        fuk: true, fuks: true, fck: true,
+        shit: true, shits: true, shitty: true, bullshit: true, bullshits: true,
+        dipshit: true, dipshits: true, horseshit: true,
+        bitch: true, bitches: true, bitching: true, biatch: true,
+        ass: true, asshole: true, assholes: true,
+        cunt: true, cunts: true
+    };
+    var PROFANE_COLLAPSED_WORDS = {};
+    Object.keys(PROFANE_WORDS).forEach(function(word) {
+        if (word !== 'ass') PROFANE_COLLAPSED_WORDS[word] = true;
+    });
+
+    function esc(s) {
+        if (!s) return '';
+        return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function normalizeGurmukhi(text) {
+        return text.replace(/[॥।੦੧੨੩੪੫੬੭੮੯\d|(){}\[\]]/g, '').replace(/\s+/g, ' ').trim();
+    }
+
+    function isGurmukhi(text) {
+        for (var i = 0; i < text.length; i++) {
+            var c = text.charCodeAt(i);
+            if (c >= 0x0A00 && c <= 0x0A7F) return true;
+        }
+        return false;
+    }
+
+    function bigrams(s) {
+        var bg = {};
+        for (var i = 0; i < s.length - 1; i++) {
+            var b = s.substring(i, i + 2);
+            bg[b] = (bg[b] || 0) + 1;
+        }
+        return bg;
+    }
+
+    function bigramSimilarity(a, b) {
+        var bgA = bigrams(a);
+        var bgB = bigrams(b);
+        var keysA = Object.keys(bgA);
+        var keysB = Object.keys(bgB);
+        if (keysA.length === 0 || keysB.length === 0) return 0;
+        var overlap = 0;
+        for (var i = 0; i < keysA.length; i++) {
+            if (bgB[keysA[i]]) overlap++;
+        }
+        return (2.0 * overlap) / (keysA.length + keysB.length);
+    }
+
+    function wordOverlap(textWords, verseWords) {
+        var count = 0;
+        for (var i = 0; i < textWords.length; i++) {
+            if (verseWords.indexOf(textWords[i]) !== -1) count++;
+        }
+        return count;
+    }
+
+    function extractWords(s) {
+        return s.toLowerCase().match(/[a-z]+/g) || [];
+    }
+
+    function normalizeEnglish(text) {
+        return (text || '')
+            .toLowerCase()
+            .replace(/\|\|.*?\|\|/g, ' ')
+            .replace(/[^a-z0-9\s]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function likelyEnglish(text) {
+        var normalized = normalizeEnglish(text);
+        if (!normalized) return false;
+        if (/\|\||\(n\)/i.test(text)) return false;
+        var words = extractWords(normalized);
+        var stop = ['the', 'and', 'that', 'with', 'your', 'you', 'shall', 'lord', 'god', 'truth', 'grace', 'divine', 'within', 'through', 'from', 'into', 'upon', 'not'];
+        for (var i = 0; i < words.length; i++) {
+            if (stop.indexOf(words[i]) !== -1) return true;
+        }
+        /* No stop-word hit: with fall-through routing in verifyLatin this is
+           only an ordering hint, and bare Latin words are more often
+           romanized Gurbani than English. */
+        return false;
+    }
+
+    function containsProfaneWords(text) {
+        var raw = (text || '').toLowerCase().match(/[a-z0-9@#$!|*_.-]+/g) || [];
+        var tokens = [];
+        for (var i = 0; i < raw.length; i++) {
+            var normalized = normalizeProfaneToken(raw[i]);
+            if (!normalized) continue;
+            tokens.push(normalized);
+            if (PROFANE_WORDS[normalized]) return true;
+            var collapsed = normalized.replace(/(.)\1+/g, '$1');
+            if (PROFANE_COLLAPSED_WORDS[collapsed]) return true;
+        }
+
+        for (var start = 0; start < tokens.length; start++) {
+            var joined = '';
+            for (var j = start; j < Math.min(start + 12, tokens.length); j++) {
+                if (tokens[j].length !== 1) break;
+                joined += tokens[j];
+                if (PROFANE_WORDS[joined]) return true;
+                var collapsedJoined = joined.replace(/(.)\1+/g, '$1');
+                if (PROFANE_COLLAPSED_WORDS[collapsedJoined]) return true;
+            }
+        }
+        return false;
+    }
+
+    function normalizeProfaneToken(token) {
+        return (token || '')
+            .replace(/[@4]/g, 'a')
+            .replace(/[$5]/g, 's')
+            .replace(/[!1|]/g, 'i')
+            .replace(/0/g, 'o')
+            .replace(/3/g, 'e')
+            .replace(/7/g, 't')
+            .replace(/[^a-z]/g, '');
+    }
+
+    function doVerify() {
+        var text = input.value.trim();
+        if (!text) return;
+        if (text.length > 500) {
+            showResult('not-found', 'Input Too Long',
+                'Maximum 500 characters. Paste a single verse or short passage, not a full shabad.', []);
+            return;
+        }
+        if (containsProfaneWords(text)) {
+            showResult('not-found', 'Unsuitable Input',
+                'Input contains language that is not suitable for Gurbani verification. Remove unrelated or profane wording and paste the claimed Gurbani text.', []);
+            return;
+        }
+        /* Reject repeated text (spam detection).
+           Check both newline-separated and space-separated repetition. */
+        var words = text.split(/\s+/);
+        if (words.length > 10) {
+            var firstFew = words.slice(0, 5).join(' ');
+            var count = 0;
+            for (var i = 0; i <= words.length - 5; i += 5) {
+                if (words.slice(i, i + 5).join(' ') === firstFew) count++;
+            }
+            if (count >= 3) {
+                showResult('not-found', 'Repeated Text',
+                    'The same phrase repeated is not a verse. Paste actual Gurbani text to verify.', []);
+                return;
+            }
+        }
+
+        if (isGurmukhi(text)) {
+            verifyGurmukhi(text);
+        } else {
+            verifyLatin(text);
+        }
+    }
+
+    /* Latin-script input can be romanized Gurbani or an English translation.
+       likelyEnglish() only chooses which matcher runs first; the other is
+       always tried before reporting Not Found. */
+    function verifyLatin(text) {
+        var englishFirst = likelyEnglish(text);
+        var first = englishFirst ? tryEnglish : tryTransliteration;
+        var second = englishFirst ? tryTransliteration : tryEnglish;
+        var a = first(text);
+        if (a === 'shown') return;
+        var b = second(text);
+        if (b === 'shown') return;
+        /* Either matcher voting 'short' means the input was too brief for a
+           confident miss; only a full-length miss on both earns Not Found.
+           This mirrors the MCP verifier, where a three-word English miss
+           reports too-short rather than not_found. */
+        if (a === 'short' || b === 'short') {
+            showResult('not-found', 'Too Short',
+                'Too short to verify reliably. Paste a longer phrase, or use Search for keywords.', []);
+            return;
+        }
+        showResult('not-found', 'Not Found',
+            'This text does not exactly match the Open Granth Roman or English study layers. For rough wording, use Search. For verification, use the original Gurmukhi when possible.', []);
+    }
+
+    function verifyGurmukhi(text) {
+        var normalized = normalizeGurmukhi(text);
+        if (!normalized) { showResult('error', 'Error', 'No Gurmukhi text found after normalization.', []); return; }
+
+        var passageMatches = findGurmukhiPassageMatches(normalized);
+        if (passageMatches.length === 1) {
+            showResult('verified', 'Verified', 'Exact multi-line passage found in the Open Granth source files.', passageMatches);
+            return;
+        }
+        if (passageMatches.length > 1) {
+            showResult('partial', 'Multiple Exact Passages',
+                'This Gurmukhi passage appears in multiple places. It is an exact passage match, but not specific enough for a single verified citation.',
+                passageMatches.slice(0, 5));
+            return;
+        }
+
+        /* Pass 1: exact match */
+        var exactMatches = [];
+        for (var i = 0; i < verses.length; i++) {
+            var g = normalizeGurmukhi(verses[i].gurmukhi || '');
+            if (normalized === g) {
+                exactMatches.push(verses[i]);
+            }
+        }
+        if (exactMatches.length === 1) {
+            showResult('verified', 'Verified', 'Exact match found in the Open Granth source files.', exactMatches);
+            return;
+        }
+        if (exactMatches.length > 1) {
+            showResult('partial', 'Multiple Exact Matches',
+                'This Gurmukhi phrase appears in multiple verses. It is an exact phrase match, but not specific enough for a single verified citation. Paste more surrounding text or choose the intended ang.',
+                exactMatches.slice(0, 5));
+            return;
+        }
+
+        /* Pass 2: substring match */
+        var substringMatches = [];
+        for (var i = 0; i < verses.length; i++) {
+            var g = normalizeGurmukhi(verses[i].gurmukhi || '');
+            if (g && (normalized.indexOf(g) !== -1 || g.indexOf(normalized) !== -1)) {
+                substringMatches.push(verses[i]);
+            }
+        }
+        if (substringMatches.length === 1) {
+            showResult('verified', 'Verified', 'Text found as part of a verse in the Open Granth source files.', substringMatches);
+            return;
+        }
+        if (substringMatches.length > 1) {
+            showResult('partial', 'Multiple Exact Matches',
+                'This Gurmukhi phrase appears in multiple verses. It is an exact phrase match, but not specific enough for a single verified citation. Paste more surrounding text or choose the intended ang.',
+                substringMatches.slice(0, 5));
+            return;
+        }
+
+        /* Pass 3: fuzzy match */
+        var candidates = [];
+        for (var i = 0; i < verses.length; i++) {
+            var g = normalizeGurmukhi(verses[i].gurmukhi || '');
+            if (!g) continue;
+            if (Math.abs(g.length - normalized.length) > Math.max(g.length, normalized.length) * 0.5) continue;
+            var sim = bigramSimilarity(normalized, g);
+            if (sim > 0.5) {
+                candidates.push({ sim: sim, verse: verses[i] });
+            }
+        }
+
+        if (candidates.length > 0) {
+            candidates.sort(function(a, b) { return b.sim - a.sim; });
+            var top = candidates.slice(0, 3).map(function(c) { c.verse._sim = c.sim; return c.verse; });
+            showResult('partial', 'Partial Match',
+                'No exact match found. These verses are the closest matches. The quoted text may be altered or incorrectly transcribed.', top);
+            return;
+        }
+
+        showResult('not-found', 'Not Found',
+            'No matching text was found in the Open Granth source files. It may be fabricated, from a different source, or too heavily altered to match.', []);
+    }
+
+    function findGurmukhiPassageMatches(normalized) {
+        var matches = [];
+        var maxWindow = 8;
+        for (var i = 0; i < verses.length; i++) {
+            var first = verses[i];
+            if (!first || !first.gurmukhi) continue;
+            var parts = [];
+            var passageVerses = [];
+            for (var j = i; j < Math.min(i + maxWindow, verses.length); j++) {
+                var v = verses[j];
+                if (!v || v.ang !== first.ang) break;
+                var g = normalizeGurmukhi(v.gurmukhi || '');
+                if (!g) break;
+                parts.push(g);
+                passageVerses.push(v);
+                if (passageVerses.length < 2) continue;
+                var combined = parts.join(' ');
+                if (combined.length > normalized.length * 1.25) break;
+                if (combined === normalized) {
+                    matches.push({
+                        ang: first.ang,
+                        author: first.author,
+                        verses: passageVerses
+                    });
+                    break;
+                }
+            }
+        }
+        return matches;
+    }
+
+    /* Returns 'shown' if a result was displayed, 'short' if the input is too
+       short for this matcher, 'none' if no match; verifyLatin() handles the
+       terminal message so the other matcher gets its chance first. */
+    function tryEnglish(text) {
+        var normalized = normalizeEnglish(text);
+        var words = extractWords(normalized);
+        if (words.length < 3 || normalized.length < 16) {
+            return 'short';
+        }
+
+        /* Exact whole-line matches outrank containment, mirroring the
+           Gurmukhi matcher: a unique exact line must not be drowned by
+           shorter lines contained in the input (the So Dar header case). */
+        var exactMatches = [];
+        var matches = [];
+        for (var i = 0; i < verses.length; i++) {
+            var e = normalizeEnglish(verses[i].english || '');
+            if (!e) continue;
+            if (e === normalized) {
+                exactMatches.push(verses[i]);
+            } else if (e.indexOf(normalized) !== -1 || (normalized.length > e.length && normalized.indexOf(e) !== -1)) {
+                matches.push(verses[i]);
+            }
+        }
+
+        if (exactMatches.length === 1) {
+            showResult('verified', 'Verified', 'English translation phrase found in the Open Granth English study layer.', exactMatches);
+            return 'shown';
+        }
+        if (exactMatches.length > 1) {
+            showResult('partial', 'Multiple Exact Matches',
+                'This English phrase appears in multiple verses. It is an exact phrase match, but not specific enough for a single verified citation. Use the original Gurmukhi or paste a longer English phrase.',
+                exactMatches.slice(0, 5));
+            return 'shown';
+        }
+
+        if (matches.length === 1) {
+            showResult('verified', 'Verified', 'English translation phrase found in the Open Granth English study layer.', matches);
+            return 'shown';
+        }
+
+        if (matches.length > 1) {
+            showResult('partial', 'Multiple Exact Matches',
+                'This English phrase appears in multiple verses. It is an exact phrase match, but not specific enough for a single verified citation. Use the original Gurmukhi or paste a longer English phrase.',
+                matches.slice(0, 5));
+            return 'shown';
+        }
+
+        /* A three-word miss is weak evidence of absence (paraphrase or
+           spacing variant); only 4+ word misses report a confident miss. */
+        if (words.length < 4) {
+            return 'short';
+        }
+
+        return 'none';
+    }
+
+    function normalizeTransliteration(text) {
+        return text
+            .toLowerCase()
+            .replace(/\|\|/g, '')
+            .replace(/[।॥.,;:!?"'`~*_\-(){}\[\]]/g, '')
+            .replace(/\d/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    /* Same contract as tryEnglish: 'shown' | 'short' | 'none'. */
+    function tryTransliteration(text) {
+        var normalized = normalizeTransliteration(text);
+        if (!normalized) {
+            return 'none';
+        }
+        if (normalized.length < 6) {
+            return 'short';
+        }
+
+        /* Pass 1: exact match */
+        var exactMatches = [];
+        for (var i = 0; i < verses.length; i++) {
+            var t = normalizeTransliteration(verses[i].transliteration || '');
+            if (t && t === normalized) {
+                exactMatches.push(verses[i]);
+            }
+        }
+        if (exactMatches.length === 1) {
+            showResult('verified', 'Verified', 'Transliteration found in the Open Granth Roman layer.', exactMatches);
+            return 'shown';
+        }
+        if (exactMatches.length > 1) {
+            showResult('partial', 'Multiple Exact Matches',
+                'This transliteration phrase appears in multiple verses. It is an exact phrase match, but not specific enough for a single verified citation. Paste more surrounding text or choose the intended ang.',
+                exactMatches.slice(0, 5));
+            return 'shown';
+        }
+
+        /* Pass 2: substring match (input contained in a verse, or vice versa) */
+        var substringMatches = [];
+        for (var i = 0; i < verses.length; i++) {
+            var t = normalizeTransliteration(verses[i].transliteration || '');
+            if (!t) continue;
+            if (t.indexOf(normalized) !== -1 || (normalized.length > t.length && normalized.indexOf(t) !== -1)) {
+                substringMatches.push(verses[i]);
+            }
+        }
+        if (substringMatches.length === 1) {
+            showResult('verified', 'Verified', 'Transliteration found in the Open Granth Roman layer.', substringMatches);
+            return 'shown';
+        }
+        if (substringMatches.length > 1) {
+            showResult('partial', 'Multiple Exact Matches',
+                'This transliteration phrase appears in multiple verses. It is an exact phrase match, but not specific enough for a single verified citation. Paste more surrounding text or choose the intended ang.',
+                substringMatches.slice(0, 5));
+            return 'shown';
+        }
+
+        /* Pass 3: space-insensitive match. Word spacing varies between
+           transliteration conventions (the corpus writes "ikOankaar" as one
+           token where readers type "ik oankaar"), and spacing carries no
+           phonetic meaning, so compare with spaces removed. Letters are
+           never fuzzed: a vowel difference is a real mismatch. */
+        var squashed = normalized.replace(/ /g, '');
+        var squashedMatches = [];
+        for (var i = 0; i < verses.length; i++) {
+            var t = normalizeTransliteration(verses[i].transliteration || '');
+            if (!t) continue;
+            var ts = t.replace(/ /g, '');
+            if (ts.indexOf(squashed) !== -1 || (squashed.length > ts.length && squashed.indexOf(ts) !== -1)) {
+                squashedMatches.push(verses[i]);
+            }
+        }
+        if (squashedMatches.length === 1) {
+            showResult('verified', 'Verified', 'Transliteration found in the Open Granth Roman layer (word spacing differs from the source text rendering).', squashedMatches);
+            return 'shown';
+        }
+        if (squashedMatches.length > 1) {
+            showResult('partial', 'Multiple Exact Matches',
+                'This transliteration phrase appears in multiple verses. It is an exact phrase match, but not specific enough for a single verified citation. Paste more surrounding text or choose the intended ang.',
+                squashedMatches.slice(0, 5));
+            return 'shown';
+        }
+
+        return 'none';
+    }
+
+    function showResult(type, status, message, matchedVerses) {
+        bannerDiv.className = 'result-banner ' + type;
+        statusEl.textContent = status;
+        messageEl.textContent = message;
+
+        versesDiv.textContent = '';
+
+        if (matchedVerses.length > 0) {
+            if (type === 'partial') {
+                var label = document.createElement('p');
+                label.className = 'matches-label';
+                label.textContent = status.indexOf('Multiple Exact') === 0 ? 'Exact matches' : 'Closest matches';
+                versesDiv.appendChild(label);
+            }
+
+            for (var j = 0; j < matchedVerses.length; j++) {
+                var v = matchedVerses[j];
+                var div = document.createElement('div');
+                div.className = 'result-verse';
+
+                if (v.verses) {
+                    for (var k = 0; k < v.verses.length; k++) {
+                        var passageLine = document.createElement('div');
+                        passageLine.className = 'result-passage-line';
+                        appendVerseFields(passageLine, v.verses[k]);
+                        div.appendChild(passageLine);
+                    }
+                } else if (v.gurmukhi) {
+                    appendVerseFields(div, v);
+                }
+
+                var meta = document.createElement('p');
+                meta.className = 'result-verse-meta';
+                var link = document.createElement('a');
+                link.href = '../ang/' + v.ang + '/';
+                link.textContent = 'Ang ' + v.ang;
+                meta.appendChild(link);
+                meta.appendChild(document.createTextNode(' \u2014 ' + v.author));
+                if (v._sim) {
+                    var simBadge = document.createElement('span');
+                    simBadge.className = 'result-similarity';
+                    simBadge.textContent = Math.round(v._sim * 100) + '% match';
+                    meta.appendChild(simBadge);
+                }
+                div.appendChild(meta);
+
+                versesDiv.appendChild(div);
+            }
+        }
+
+        resultDiv.className = 'verify-result show';
+    }
+
+    function appendVerseFields(div, v) {
+        if (v.gurmukhi) {
+            var g = document.createElement('p');
+            g.className = 'gurmukhi';
+            // Display-only: keep a danda glued to its last word on narrow screens.
+            g.textContent = v.gurmukhi.replace(/ ॥/g, '\u00a0॥');
+            div.appendChild(g);
+        }
+        if (v.transliteration) {
+            var t = document.createElement('p');
+            t.className = 'translit';
+            t.textContent = v.transliteration.replace(/ \|\|/g, '\u00a0||');
+            div.appendChild(t);
+        }
+        if (v.english) {
+            var e = document.createElement('p');
+            e.className = 'english';
+            e.textContent = v.english;
+            div.appendChild(e);
+        }
+    }
+
+    function clearResult() {
+        input.value = '';
+        resultDiv.className = 'verify-result';
+        versesDiv.textContent = '';
+        input.focus();
+    }
+
+    /* ── Keyboard shortcut ── */
+    input.addEventListener('keydown', function(e) {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+            e.preventDefault();
+            doVerify();
+        }
+    });
+
+    /* ── Load data ── */
+    fetch('../data/verses.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            verses = data;
+            subtitleEl.textContent = 'Check any text against ' + verses.length.toLocaleString() + ' released source entries';
+            input.disabled = false;
+            btn.disabled = false;
+            input.focus();
+        })
+        .catch(function() {
+            subtitleEl.textContent = 'Failed to load verse data';
+            subtitleEl.style.color = 'var(--accent)';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "name": "open-granth",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20",
+    "npm": ">=11.10.0"
+  },
+  "description": "Sri Guru Granth Sahib Ji in AI-ready Markdown: verified corpus, static site, citation-first verifier, and MCP server.",
+  "scripts": {
+    "build:site": "python3 scripts/build_site.py",
+    "test": "python3 -m pytest",
+    "test:release": "python3 tests/verify_release_gate.py"
+  },
+  "keywords": ["gurbani", "sikh", "guru-granth-sahib", "gurmukhi", "corpus", "mcp", "markdown"],
+  "author": "Satnam Singh Narang",
+  "license": "MIT",
+  "devDependencies": {
+    "@shabados/database": "5.0.0-next.0"
+  }
+}

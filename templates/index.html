@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self'; media-src 'self'">
+    <link rel="stylesheet" href="fonts/fonts.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Granth · Sri Guru Granth Sahib Ji</title>
+    <meta name="description" content="Browse the complete Sri Guru Granth Sahib Ji: 1,430 angs with Gurmukhi and transliteration. Freely accessible. Open source. Seva.">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <meta property="og:image" content="https://opengranth.org/social-card.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Open Granth wordmark above the line Gurbani, open source, seva, and the domain opengranth.org">
+    <meta property="og:title" content="Open Granth · Sri Guru Granth Sahib Ji">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://opengranth.org/">
+    <link rel="canonical" href="https://opengranth.org/">
+    <link rel="stylesheet" href="style.css{% if css_version %}?v={{ css_version }}{% endif %}">
+    <script>
+    (function() {
+        var t = localStorage.getItem('og-theme');
+        if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    })();
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-links" id="nav-menu">
+                <a href="about/" class="nav-link">About</a>
+                <a href="search/" class="nav-link">Search</a>
+                <a href="verify/" class="nav-link">Verify</a>
+            </div>
+            <a href="./" class="nav-home">Open Granth<span class="nav-brand-mark" aria-hidden="true">&#2405;</span></a>
+            <div class="nav-right">
+                <input type="number" id="nav-ang-input" min="1" max="1430" placeholder="Ang #" aria-label="Go to ang number">
+                <button type="button" class="nav-menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu" onclick="toggleMenu()">
+                    <svg class="icon-burger" viewBox="0 0 24 24" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+                    <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle light/dark mode">
+                    <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="home">
+        <header class="home-header">
+            <p class="home-ek-onkar">&#2676;</p>
+            <h1>Open Granth</h1>
+            <p class="home-subtitle">Sri Guru Granth Sahib Ji</p>
+            <p class="home-desc">1,430 angs of Gurbani, freely accessible. Open source. Seva.</p>
+            <a href="verify/" class="home-verify-cta">
+                <span class="home-verify-cta-text">Verify a Gurbani quote</span>
+                <span class="home-verify-cta-sub">Check a quote against the released text.</span>
+            </a>
+        </header>
+
+        <div class="banis">
+            <h2 class="section-label">Nitnem &amp; Popular Banis</h2>
+            <p class="section-note">Banis contained within Sri Guru Granth Sahib Ji. Jaap Sahib, Tav-Prasad Savaiye, and Benti Chaupai are outside the scope of this release; see <a href="about/">About</a>.</p>
+            <div class="bani-grid">
+                <a href="ang/1/#v1" class="bani-card">
+                    <span class="bani-name">Japji Sahib</span>
+                    <span class="bani-ang">Angs 1–8</span>
+                </a>
+                <a href="ang/8/#v39" class="bani-card">
+                    <span class="bani-name">So Dar</span>
+                    <span class="bani-ang">Angs 8–10</span>
+                </a>
+                <a href="ang/10/#v26" class="bani-card">
+                    <span class="bani-name">So Purakh</span>
+                    <span class="bani-ang">Angs 10–12</span>
+                </a>
+                <a href="ang/12/#v23" class="bani-card">
+                    <span class="bani-name">Kirtan Sohila</span>
+                    <span class="bani-ang">Angs 12–13</span>
+                </a>
+                <a href="ang/262/#v13" class="bani-card">
+                    <span class="bani-name">Sukhmani Sahib</span>
+                    <span class="bani-ang">Angs 262–296</span>
+                </a>
+                <a href="ang/462/#v22" class="bani-card">
+                    <span class="bani-name">Asa di Var</span>
+                    <span class="bani-ang">Angs 462–475</span>
+                </a>
+                <a href="ang/917/#v1" class="bani-card">
+                    <span class="bani-name">Anand Sahib</span>
+                    <span class="bani-ang">Angs 917–922</span>
+                </a>
+                <a href="ang/1426/#v17" class="bani-card">
+                    <span class="bani-name">Salok Mahala 9</span>
+                    <span class="bani-ang">Angs 1426–1429</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="sections">
+            <h2 class="section-label">Raag and Section Index</h2>
+            <ul class="section-list">
+                <li><a href="ang/1/">Japji Sahib<span class="section-range">1–8</span></a></li>
+                <li><a href="ang/8/#v39">So Dar / So Purakh / Sohila<span class="section-range">8–13</span></a></li>
+                <li><a href="ang/14/">Raag Siree<span class="section-range">14–93</span></a></li>
+                <li><a href="ang/94/">Raag Maajh<span class="section-range">94–150</span></a></li>
+                <li><a href="ang/151/">Raag Gauree<span class="section-range">151–346</span></a></li>
+                <li><a href="ang/347/">Raag Aasaa<span class="section-range">347–488</span></a></li>
+                <li><a href="ang/489/">Raag Goojaree<span class="section-range">489–526</span></a></li>
+                <li><a href="ang/527/">Raag Devgandhaaree<span class="section-range">527–536</span></a></li>
+                <li><a href="ang/537/#v2">Raag Bihaagra<span class="section-range">537–556</span></a></li>
+                <li><a href="ang/557/#v2">Raag Vadahans<span class="section-range">557–594</span></a></li>
+                <li><a href="ang/595/#v2">Raag Sorath<span class="section-range">595–659</span></a></li>
+                <li><a href="ang/660/#v1">Raag Dhanaasaree<span class="section-range">660–695</span></a></li>
+                <li><a href="ang/696/">Raag Jaitsree<span class="section-range">696–710</span></a></li>
+                <li><a href="ang/711/">Raag Todee<span class="section-range">711–718</span></a></li>
+                <li><a href="ang/719/">Raag Bairaaree<span class="section-range">719–720</span></a></li>
+                <li><a href="ang/721/">Raag Tilang<span class="section-range">721–727</span></a></li>
+                <li><a href="ang/728/">Raag Soohee<span class="section-range">728–794</span></a></li>
+                <li><a href="ang/795/">Raag Bilaaval<span class="section-range">795–858</span></a></li>
+                <li><a href="ang/859/">Raag Gond<span class="section-range">859–875</span></a></li>
+                <li><a href="ang/876/">Raag Raamkalee<span class="section-range">876–974</span></a></li>
+                <li><a href="ang/975/">Raag Nat Naaraain<span class="section-range">975–983</span></a></li>
+                <li><a href="ang/984/">Raag Maale Gaaura<span class="section-range">984–988</span></a></li>
+                <li><a href="ang/989/">Raag Maaru<span class="section-range">989–1106</span></a></li>
+                <li><a href="ang/1107/">Raag Tukhaari<span class="section-range">1107–1117</span></a></li>
+                <li><a href="ang/1118/">Raag Kaydaaraa<span class="section-range">1118–1124</span></a></li>
+                <li><a href="ang/1125/">Raag Bhairao<span class="section-range">1125–1167</span></a></li>
+                <li><a href="ang/1168/">Raag Basant<span class="section-range">1168–1196</span></a></li>
+                <li><a href="ang/1197/">Raag Saarang<span class="section-range">1197–1253</span></a></li>
+                <li><a href="ang/1254/">Raag Malaar<span class="section-range">1254–1293</span></a></li>
+                <li><a href="ang/1294/">Raag Kaanra<span class="section-range">1294–1318</span></a></li>
+                <li><a href="ang/1319/">Raag Kalyaan<span class="section-range">1319–1326</span></a></li>
+                <li><a href="ang/1327/">Raag Prabhaatee<span class="section-range">1327–1351</span></a></li>
+                <li><a href="ang/1352/">Raag Jaijaavantee<span class="section-range">1352–1353</span></a></li>
+                <li><a href="ang/1353/#v6">Salok Sehskritee<span class="section-range">1353–1360</span></a></li>
+                <li><a href="ang/1360/#v7">Gaathaa<span class="section-range">1360–1361</span></a></li>
+                <li><a href="ang/1361/#v25">Phunhay<span class="section-range">1361–1363</span></a></li>
+                <li><a href="ang/1363/#v35">Chaubolas<span class="section-range">1363–1364</span></a></li>
+                <li><a href="ang/1364/#v19">Salok Bhagat Kabeer Ji<span class="section-range">1364–1377</span></a></li>
+                <li><a href="ang/1377/#v27">Salok Sheikh Fareed Ji<span class="section-range">1377–1384</span></a></li>
+                <li><a href="ang/1385/">Svaiyay Mahle<span class="section-range">1385–1409</span></a></li>
+                <li><a href="ang/1410/">Salok Vaaran Thay Vadheek<span class="section-range">1410–1426</span></a></li>
+                <li><a href="ang/1426/#v17">Salok Mahala 9<span class="section-range">1426–1429</span></a></li>
+                <li><a href="ang/1429/#v22">Mundaavanee<span class="section-range">1429</span></a></li>
+                <li><a href="ang/1429/#v34">Raag Maalaa<span class="section-range">1429–1430</span></a></li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p class="attribution">{{ footer_attribution }} &middot; <a href="https://github.com/opengranth/open-granth">Open Granth</a></p>
+    </footer>
+
+    <script>
+    document.getElementById('nav-ang-input').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            var n = parseInt(this.value, 10);
+            if (n >= 1 && n <= 1430) window.location.href = 'ang/' + n + '/';
+        }
+    });
+    function setMenu(open) {
+        var nav = document.querySelector('nav');
+        var btn = document.querySelector('.nav-menu-btn');
+        nav.classList.toggle('nav-menu-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        /* Page scroll pauses while the menu is the active surface. */
+        document.documentElement.style.overflow = open ? 'hidden' : '';
+    }
+    function toggleMenu() {
+        setMenu(!document.querySelector('nav').classList.contains('nav-menu-open'));
+    }
+    document.addEventListener('click', function (e) {
+        var nav = document.querySelector('nav');
+        if (!nav.classList.contains('nav-menu-open')) return;
+        if (e.target.closest('.nav-menu-btn')) return;
+        // A tap outside the panel dismisses; selecting a link dismisses and
+        // lets the navigation proceed.
+        if (!e.target.closest('#nav-menu') || e.target.closest('.nav-link')) setMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && document.querySelector('nav').classList.contains('nav-menu-open')) {
+            setMenu(false);
+            document.querySelector('.nav-menu-btn').focus();
+        }
+    });
+    window.matchMedia('(min-width: 801px)').addEventListener('change', function (e) {
+        if (e.matches) setMenu(false);
+    });
+    function toggleTheme() {
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('og-theme', 'light');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('og-theme', 'dark');
+        }
+    }
+    </script>
+</body>
+</html>
