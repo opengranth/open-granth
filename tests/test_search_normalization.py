@@ -12,8 +12,9 @@ normalization table maps common spellings to corpus scheme spellings.
 Table contract (reviewed): alternatives are OR within a query position,
 positions are AND, and all positions must be satisfied within one text layer.
 Phrase aliases are recognized on contiguous token windows BEFORE per-token
-aliases or expansions run. Token expansions (satnam -> sat, naam) create
-separate required positions, never alternatives.
+rules run. Compound aliases (satnam -> sat, naam) form ONE position whose
+token sequence must appear contiguously and in order (issue #7); ordinary
+multi-word queries remain independent unordered positions.
 """
 
 import json
@@ -59,9 +60,9 @@ def test_every_table_target_exists_in_roman_layer():
     for key, targets in NORMALIZATION["phrase_aliases"].items():
         for t in targets:
             assert t in corpus, f"phrase alias target missing from corpus: {key} -> {t}"
-    for key, seq in NORMALIZATION["token_expansions"].items():
+    for key, seq in NORMALIZATION["compound_aliases"].items():
         for t in seq:
-            assert t in corpus, f"expansion token missing from corpus: {key} -> {t}"
+            assert t in corpus, f"compound token missing from corpus: {key} -> {t}"
 
 
 def test_alias_keys_that_are_corpus_tokens_preserve_themselves():
@@ -92,25 +93,26 @@ def test_phrase_alias_recognized_before_token_aliases():
     # "ik onkar" must be handled as a phrase window, not split into per-token
     # transformations first.
     positions = expand_roman_query("ik onkar")
-    assert positions == [["ikoankaar"]]
+    assert positions == [[["ikoankaar"]]]
 
 
 def test_phrase_alias_inside_longer_query():
     positions = expand_roman_query("ik onkar dayal")
-    assert positions[0] == ["ikoankaar"]
-    assert positions[1] == ["daiaal"]
+    assert positions[0] == [["ikoankaar"]]
+    assert positions[1] == [["daiaal"]]
 
 
-def test_satnam_expands_to_two_required_positions():
-    # Expansion creates two AND positions in the same layer, never two
-    # alternatives for one position.
+def test_satnam_is_one_contiguous_sequence_position():
+    # Compound aliases form ONE position holding a token sequence that must
+    # appear adjacently and in order (issue #7), never independent positions
+    # and never alternatives.
     positions = expand_roman_query("satnam")
-    assert positions == [["sat"], ["naam"]]
+    assert positions == [[["sat", "naam"]]]
 
 
 def test_tu_alias_preserves_literal_tu():
     positions = expand_roman_query("tu")
-    assert positions == [["tu", "too", "toon"]]
+    assert positions == [[["tu"], ["too"], ["toon"]]]
 
 
 # ---------------------------------------------------------------------------
@@ -247,3 +249,45 @@ def test_mcp_identities_match_site_verses_json_field_for_field():
                 if verse.get(field, "") != site_v.get(field, ""):
                     mismatches += 1
     assert mismatches == 0, f"{mismatches} field mismatches between MCP and site data"
+
+
+# ---------------------------------------------------------------------------
+# Compound-alias adjacency (issue #7)
+# ---------------------------------------------------------------------------
+
+def test_satnam_requires_contiguous_sat_naam():
+    """satnam must match only lines where sat naam occurs as an adjacent,
+    ordered sequence. Angs 33, 129, and 153 contain separated sat and naam
+    tokens and previously matched (issue #7)."""
+    results = _word_search("satnam", ALL_FIELDS, 80)
+    angs = [r["ang"] for r in results]
+    assert 1 in angs
+    for false_positive in (33, 129, 153):
+        assert false_positive not in angs, f"Ang {false_positive} matched without adjacency"
+    for r in results:
+        toks = roman_words(r["transliteration"])
+        joined = " ".join(toks)
+        assert "sat naam" in joined, f"Ang {r['ang']} lacks contiguous sat naam: {joined}"
+
+
+def test_plain_multiword_query_stays_unordered():
+    # Adjacency applies only to compound aliases: the ordinary two-word query
+    # "sat naam" keeps independent unordered positions, so Ang 33 (separated
+    # sat ... naam) remains a legitimate keyword match.
+    angs = [r["ang"] for r in _word_search("sat naam", ALL_FIELDS, 100)]
+    assert 33 in angs
+
+
+def test_compound_alias_composes_with_phrase_alias_in_one_query():
+    # "ik onkar satnam" exercises a phrase alias and a compound alias as two
+    # AND positions; Ang 1 verse 1 contains ikoankaar and contiguous sat naam.
+    results = _word_search("ik onkar satnam", ALL_FIELDS, 20)
+    assert (1, 1) in [(r["ang"], r["verse_index"]) for r in results]
+
+
+def test_compound_alias_is_directional():
+    # Adjacency is ordered: Angs 275 and 285 contain the adjacent reversed
+    # pair "naam sat" but never "sat naam", so satnam must not match them.
+    angs = [r["ang"] for r in _word_search("satnam", ALL_FIELDS, 80)]
+    assert 275 not in angs
+    assert 285 not in angs

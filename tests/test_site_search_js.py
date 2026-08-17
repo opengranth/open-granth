@@ -104,3 +104,18 @@ def test_site_js_multiline_passage_card_targets_first_verse():
     assert card["tag"] == "A"
     assert card["href"] == "../ang/747/#v12"
     assert "ਅਰਦਾਸਿ" in card["text"] and "ਦਿਨੁ ਰੈਣਿ" in card["text"]
+
+
+def test_site_js_satnam_requires_contiguous_sat_naam():
+    """Issue #7 on the built site JS: satnam matches only contiguous sat naam.
+    Angs 33, 129, and 153 (separated tokens) are excluded; Ang 1 remains."""
+    result = run_harness("search", "satnam")
+    angs = result["angs"]
+    assert 1 in angs
+    for false_positive in (33, 129, 153):
+        assert false_positive not in angs
+
+
+def test_site_js_plain_sat_naam_query_stays_unordered():
+    result = run_harness("search", "sat naam")
+    assert 33 in result["angs"]

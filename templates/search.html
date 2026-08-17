@@ -274,7 +274,12 @@
             var found = -1;
             for (var j = pos + 1; j < verseTokens.length && found === -1; j++) {
                 for (var a = 0; a < positions[i].length; a++) {
-                    if (verseTokens[j] === positions[i][a]) { found = j; break; }
+                    var alt = positions[i][a];
+                    var fits = true;
+                    for (var k = 0; k < alt.length; k++) {
+                        if (verseTokens[j + k] !== alt[k]) { fits = false; break; }
+                    }
+                    if (fits) { found = j; break; }
                 }
             }
             if (found === -1) continue;
@@ -309,7 +314,8 @@
                 var alts = romanPositions[p];
                 var hit = false;
                 for (var a = 0; a < alts.length; a++) {
-                    if (rset[alts[a]]) { hit = true; break; }
+                    var alt = alts[a];
+                    if (alt.length === 1 ? rset[alt[0]] : seqInTokens(alt, rlist)) { hit = true; break; }
                 }
                 if (!hit) { allRoman = false; break; }
             }
@@ -385,9 +391,11 @@
 
     /* Common-spelling normalization table. Single machine-readable source at
        metadata/search-normalization.json, shared with the MCP server and
-       injected at build time; do not edit inline. Contract: alternatives are
-       OR within a position, positions are AND, all positions must be
-       satisfied within one text layer. */
+       injected at build time; do not edit inline. Contract summary:
+       alternatives are OR within a position, positions are AND, all satisfied
+       within one text layer; compound aliases require contiguous ordered
+       token sequences. The full contract lives in the table's _contract
+       field. */
     var NORMALIZATION = {{ normalization_json }};
 
     /* Build Roman query positions. Order matters (reviewed rule): exact
@@ -413,22 +421,39 @@
                 }
             }
         }
+        /* Each position is a list of OR-alternatives; each alternative is a
+           token SEQUENCE (usually one token). Compound aliases (satnam ->
+           sat, naam) become ONE position whose single alternative must appear
+           contiguously and in order in the Roman line (issue #7); ordinary
+           multi-word queries remain independent unordered positions. */
         var positions = [];
         for (var t = 0; t < tokens.length; t++) {
             var tok = tokens[t];
             if (typeof tok === 'object') {
-                positions.push(tok.alts.slice());
+                positions.push(tok.alts.map(function (a) { return [a]; }));
                 continue;
             }
-            var expansion = NORMALIZATION.token_expansions[tok];
-            if (expansion) {
-                for (var e = 0; e < expansion.length; e++) positions.push([expansion[e]]);
+            var compound = NORMALIZATION.compound_aliases[tok];
+            if (compound) {
+                positions.push([compound.slice()]);
                 continue;
             }
             var aliases = NORMALIZATION.token_aliases[tok];
-            positions.push(aliases ? aliases.slice() : [tok]);
+            positions.push((aliases || [tok]).map(function (a) { return [a]; }));
         }
         return positions;
+    }
+
+    /* True when seq (a token array) appears contiguously in verseTokens. */
+    function seqInTokens(seq, verseTokens) {
+        for (var s = 0; s + seq.length <= verseTokens.length; s++) {
+            var ok = true;
+            for (var j = 0; j < seq.length; j++) {
+                if (verseTokens[s + j] !== seq[j]) { ok = false; break; }
+            }
+            if (ok) return true;
+        }
+        return false;
     }
 
     function doSearch() {

@@ -89,17 +89,22 @@ roman_word_index: dict[str, set[int]] = {}
 # 60,555 verses onto 26,566 keys and overwrote 33,989 entries.
 english_verse_words: dict[tuple[int, int], set[str]] = {}
 roman_verse_words: dict[tuple[int, int], set[str]] = {}
+# Ordered Roman token lists per verse, needed for compound-alias adjacency
+# checks and in-order scoring.
+roman_verse_tokens: dict[tuple[int, int], list[str]] = {}
 
 
 def _load_normalization() -> dict:
     """Common-spelling table shared with the site search page. Single source:
-    metadata/search-normalization.json. Contract: alternatives are OR within a
-    position, positions are AND, all positions satisfied within one layer."""
+    metadata/search-normalization.json. Contract summary: alternatives are OR
+    within a position, positions are AND, all satisfied within one layer;
+    compound aliases require contiguous ordered token sequences. The full
+    contract lives in the table's _contract field."""
     for base in (Path(__file__).resolve().parent.parent, SOURCE_DIR.resolve().parent):
         p = base / "metadata" / "search-normalization.json"
         if p.exists():
             return json.loads(p.read_text(encoding="utf-8"))
-    return {"token_aliases": {}, "phrase_aliases": {}, "token_expansions": {}}
+    return {"token_aliases": {}, "phrase_aliases": {}, "compound_aliases": {}}
 
 
 NORMALIZATION: dict = _load_normalization()
@@ -183,15 +188,16 @@ def english_words(text: str) -> list[str]:
             if w not in ENGLISH_STOPWORDS]
 
 
-def expand_roman_query(query: str) -> list[list[str]]:
+def expand_roman_query(query: str) -> list[list[list[str]]]:
     """Build Roman query positions from the normalization table.
 
-    Order matters (reviewed rule): exact phrase aliases are recognized on
-    contiguous token windows BEFORE any per-token alias or expansion runs, so
-    "ik onkar" cannot be split and transformed token-by-token first. Token
-    expansions (satnam -> sat, naam) create separate required positions,
-    never alternatives. Each returned position is a list of OR-alternatives;
-    positions are AND."""
+    Each position is a list of OR-alternatives; each alternative is a token
+    SEQUENCE (usually one token). Positions are AND. Order matters (reviewed
+    rule): exact phrase aliases are recognized on contiguous token windows
+    BEFORE any per-token rule runs. Compound aliases (satnam -> sat, naam)
+    become ONE position whose single alternative is a multi-token sequence
+    that must appear contiguously and in order in the Roman line (issue #7);
+    ordinary multi-word queries remain independent unordered positions."""
     tokens: list = roman_words(query)
     for pk in sorted(NORMALIZATION.get("phrase_aliases", {}), key=len, reverse=True):
         key_toks = pk.split(" ")
@@ -201,16 +207,17 @@ def expand_roman_query(query: str) -> list[list[str]]:
             if all(isinstance(w, str) for w in window) and window == key_toks:
                 tokens[i:i + len(key_toks)] = [tuple(NORMALIZATION["phrase_aliases"][pk])]
             i += 1
-    positions: list[list[str]] = []
+    positions: list[list[list[str]]] = []
     for tok in tokens:
         if isinstance(tok, tuple):
-            positions.append(list(tok))
+            positions.append([[t] for t in tok])
             continue
-        expansion = NORMALIZATION.get("token_expansions", {}).get(tok)
-        if expansion:
-            positions.extend([[t] for t in expansion])
+        compound = NORMALIZATION.get("compound_aliases", {}).get(tok)
+        if compound:
+            positions.append([list(compound)])
             continue
-        positions.append(list(NORMALIZATION.get("token_aliases", {}).get(tok, [tok])))
+        aliases = NORMALIZATION.get("token_aliases", {}).get(tok, [tok])
+        positions.append([[a] for a in aliases])
     return positions
 
 
@@ -229,8 +236,9 @@ def _token_sequence_in_line(input_tokens: list[str], line_tokens: list[str]) -> 
     return False
 
 
-def in_order_bonus_alts(positions: list[list[str]], verse_tokens: list[str]) -> int:
-    """In-order bonus where each query position is a list of OR-alternatives."""
+def in_order_bonus_alts(positions: list[list[list[str]]], verse_tokens: list[str]) -> int:
+    """In-order bonus where each position is a list of OR-alternative token
+    sequences (compound aliases span multiple adjacent tokens)."""
     if len(positions) < 2:
         return 0
     pos = -1
@@ -238,8 +246,11 @@ def in_order_bonus_alts(positions: list[list[str]], verse_tokens: list[str]) -> 
     for alts in positions:
         found = -1
         for j in range(pos + 1, len(verse_tokens)):
-            if verse_tokens[j] in alts:
-                found = j
+            for alt in alts:
+                if verse_tokens[j:j + len(alt)] == alt:
+                    found = j
+                    break
+            if found != -1:
                 break
         if found == -1:
             continue
@@ -398,9 +409,11 @@ def build_index():
             key = (ang_num, ordinal)
 
             eng = set(english_words(verse.get("english", "")))
-            rom = set(roman_words(verse.get("transliteration", "")))
+            rom_list = roman_words(verse.get("transliteration", ""))
+            rom = set(rom_list)
             english_verse_words[key] = eng
             roman_verse_words[key] = rom
+            roman_verse_tokens[key] = rom_list
 
             for word in eng:
                 english_word_index.setdefault(word, set()).add(ang_num)
@@ -509,7 +522,13 @@ def _word_search(query_lower: str, fields: list[str], limit: int) -> list[dict]:
     candidate_angs: set[int] = set()
     for alts in roman_positions:
         for alt in alts:
-            candidate_angs.update(roman_word_index.get(alt, set()))
+            # A sequence alternative is only possible in angs containing ALL
+            # its tokens; single-token alternatives reduce to a direct lookup.
+            angs: set[int] | None = None
+            for tok in alt:
+                s = roman_word_index.get(tok, set())
+                angs = set(s) if angs is None else angs & s
+            candidate_angs.update(angs or set())
     for qs in eng_stems:
         candidate_angs.update(english_word_index.get(qs, set()))
     if not candidate_angs:
@@ -524,8 +543,15 @@ def _word_search(query_lower: str, fields: list[str], limit: int) -> list[dict]:
 
             if roman_positions:
                 rset = roman_verse_words.get(key, set())
-                if all(any(alt in rset for alt in alts) for alts in roman_positions):
-                    rlist = roman_words(verse.get("transliteration", ""))
+                rlist = roman_verse_tokens.get(key, [])
+                if all(
+                    any(
+                        (len(alt) == 1 and alt[0] in rset)
+                        or (len(alt) > 1 and _token_sequence_in_line(alt, rlist))
+                        for alt in alts
+                    )
+                    for alts in roman_positions
+                ):
                     rank = (len(roman_positions) * 10) + in_order_bonus_alts(roman_positions, rlist)
                     score = len(roman_positions)
 

@@ -1,5 +1,5 @@
 {
-  "_contract": "Alias target arrays are exhaustive alternatives for that query position. Alternatives are OR; separate query positions are AND; every required position must be satisfied within one text layer. Tokenization: lowercase, replace (n) with n, split [a-z]+. English stemming never touches Roman queries or Roman corpus text.",
+  "_contract": "Alias target arrays are exhaustive alternatives for that query position. Alternatives are OR; separate query positions are AND; every required position must be satisfied within one text layer. Compound aliases map a fused spelling to a contiguous token sequence: the tokens must appear adjacently and in order within the Roman line, forming one required position (never independent positions, never alternatives). Adjacency applies only to compound aliases; ordinary multi-word queries remain independent unordered positions. Phrase aliases are recognized on contiguous token windows before per-token rules. Tokenization: lowercase, replace (n) with n, split [a-z]+. English stemming never touches Roman queries or Roman corpus text.",
   "token_aliases": {
     "tu": [
       "tu",
@@ -158,7 +158,7 @@
       "ikoankaar"
     ]
   },
-  "token_expansions": {
+  "compound_aliases": {
     "satnam": [
       "sat",
       "naam"

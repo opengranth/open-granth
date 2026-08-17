@@ -7,6 +7,8 @@
 // Usage:
 //   node tests/site_js_harness.mjs search "Tu dayal"
 //   node tests/site_js_harness.mjs verify "ih aradaas hamaaree"
+//   node tests/site_js_harness.mjs verify-english "in maajh and saloks"
+//   node tests/site_js_harness.mjs verify-gurmukhi "<gurmukhi text>"
 
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -56,7 +58,7 @@ class URLStub { constructor() { this.searchParams = { set() {}, delete() {}, get
 
 const [mode, query] = process.argv.slice(2);
 if (!mode || !query) {
-  console.error('usage: node site_js_harness.mjs <search|verify> "<query>"');
+  console.error('usage: node site_js_harness.mjs <search|verify|verify-english|verify-gurmukhi> "<query>"');
   process.exit(2);
 }
 
