@@ -398,11 +398,12 @@
        field. */
     var NORMALIZATION = {{ normalization_json }};
 
-    /* Build Roman query positions. Order matters (reviewed rule): exact
-       phrase aliases are recognized on contiguous token windows BEFORE any
-       per-token alias or expansion runs, so "ik onkar" cannot be split and
-       transformed token-by-token first. Token expansions (satnam -> sat,
-       naam) create separate required positions, never alternatives. */
+    /* Build Roman query positions. Order matters: exact phrase aliases are
+       recognized on contiguous token windows before any per-token rule
+       runs, so "ik onkar" cannot be split and transformed token-by-token
+       first. Compound aliases (satnam -> sat, naam) become a single
+       position whose token sequence must appear contiguously and in order
+       in the Roman line (issue #7). */
     function expandRomanQuery(ql) {
         var tokens = romanTokens(ql);
         var phraseKeys = Object.keys(NORMALIZATION.phrase_aliases).sort(function(a, b) {

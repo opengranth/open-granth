@@ -398,11 +398,12 @@
        field. */
     var NORMALIZATION = {"_contract":"Alias target arrays are exhaustive alternatives for that query position. Alternatives are OR; separate query positions are AND; every required position must be satisfied within one text layer. Compound aliases map a fused spelling to a contiguous token sequence: the tokens must appear adjacently and in order within the Roman line, forming one required position (never independent positions, never alternatives). Adjacency applies only to compound aliases; ordinary multi-word queries remain independent unordered positions. Phrase aliases are recognized on contiguous token windows before per-token rules. Tokenization: lowercase, replace (n) with n, split [a-z]+. English stemming never touches Roman queries or Roman corpus text.","token_aliases":{"tu":["tu","too","toon"],"dayal":["daiaal"],"dayaal":["dayaal","daiaal"],"ardas":["aradaas"],"ardaas":["aradaas"],"waheguru":["vaahiguroo"],"wahiguru":["vaahiguroo"],"vaheguru":["vaahiguroo"],"vahiguru":["vaahiguroo"],"simran":["simaran"],"kirpa":["kirapaa"],"kirpaa":["kirapaa"],"pyar":["piaar"],"piar":["piaar"],"pyaar":["piaar"],"guru":["guroo"],"nanak":["naanak"],"shabad":["sabad"],"shabd":["sabad"],"seva":["sevaa"],"sewa":["sevaa"],"prabhu":["prabh","prabhoo"],"akal":["akal","akaal"],"karma":["karam"],"dharma":["dharam"],"amrit":["anmrit"],"bani":["baanee"],"kirtan":["keeratan"],"darshan":["darasan"],"satguru":["satigur","satiguroo"],"satgur":["satigur","satiguroo"],"onkar":["oankaar","ikoankaar"],"oankar":["oankaar","ikoankaar"],"onkaar":["oankaar","ikoankaar"],"ram":["ram","raam"],"allah":["alahu","alah"],"mehl":["mahalaa"],"mehla":["mahalaa"],"anand":["anand","aanand"]},"phrase_aliases":{"ik onkar":["ikoankaar"],"ik onkaar":["ikoankaar"],"ik oankar":["ikoankaar"],"ik oankaar":["ikoankaar"],"ek onkar":["ikoankaar"],"ek onkaar":["ikoankaar"],"ek oankar":["ikoankaar"],"ek oankaar":["ikoankaar"]},"compound_aliases":{"satnam":["sat","naam"]}};
 
-    /* Build Roman query positions. Order matters (reviewed rule): exact
-       phrase aliases are recognized on contiguous token windows BEFORE any
-       per-token alias or expansion runs, so "ik onkar" cannot be split and
-       transformed token-by-token first. Token expansions (satnam -> sat,
-       naam) create separate required positions, never alternatives. */
+    /* Build Roman query positions. Order matters: exact phrase aliases are
+       recognized on contiguous token windows before any per-token rule
+       runs, so "ik onkar" cannot be split and transformed token-by-token
+       first. Compound aliases (satnam -> sat, naam) become a single
+       position whose token sequence must appear contiguously and in order
+       in the Roman line (issue #7). */
     function expandRomanQuery(ql) {
         var tokens = romanTokens(ql);
         var phraseKeys = Object.keys(NORMALIZATION.phrase_aliases).sort(function(a, b) {
