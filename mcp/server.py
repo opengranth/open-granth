@@ -17,6 +17,7 @@ Usage:
     OPEN_GRANTH_SOURCE=/path/to/corpus python mcp/server.py
 """
 
+import json
 import os
 import random
 import re
@@ -75,11 +76,33 @@ metadata: dict[int, dict] = {}
 # ang number → list of parsed verse dicts
 verses_by_ang: dict[int, list[dict]] = {}
 
-# lowercase word → set of ang numbers (for search)
-word_index: dict[str, set[int]] = {}
+# Split word indexes: English stems and Roman tokens never mix, so English
+# stemming cannot collide with Roman words (the "Tu dayal" defect class).
+# stemmed English word → set of ang numbers
+english_word_index: dict[str, set[int]] = {}
+# normalized Roman token → set of ang numbers
+roman_word_index: dict[str, set[int]] = {}
 
-# (ang, line) → set of lowercase words in that verse (for scoring)
-verse_words: dict[tuple[int, int], set[str]] = {}
+# (ang, verse_index) → per-layer token sets for scoring. verse_index is the
+# per-ang verse ordinal (matches the site's #vN anchors). The previous
+# (ang, line) key collided: LINE markers repeat within an ang, which collapsed
+# 60,555 verses onto 26,566 keys and overwrote 33,989 entries.
+english_verse_words: dict[tuple[int, int], set[str]] = {}
+roman_verse_words: dict[tuple[int, int], set[str]] = {}
+
+
+def _load_normalization() -> dict:
+    """Common-spelling table shared with the site search page. Single source:
+    metadata/search-normalization.json. Contract: alternatives are OR within a
+    position, positions are AND, all positions satisfied within one layer."""
+    for base in (Path(__file__).resolve().parent.parent, SOURCE_DIR.resolve().parent):
+        p = base / "metadata" / "search-normalization.json"
+        if p.exists():
+            return json.loads(p.read_text(encoding="utf-8"))
+    return {"token_aliases": {}, "phrase_aliases": {}, "token_expansions": {}}
+
+
+NORMALIZATION: dict = _load_normalization()
 
 
 ENGLISH_STOPWORDS = {
@@ -143,6 +166,90 @@ def searchable_words(text: str) -> list[str]:
 
 def stemmed_words(text: str) -> list[str]:
     return [stem(w) for w in searchable_words(text)]
+
+
+def roman_words(text: str) -> list[str]:
+    """Roman-layer tokens. The scheme writes nasals as (n), e.g. a(n)mrit:
+    replace (n) with n (never delete the sequence) before tokenizing, or words
+    like anmrit and gobind are unfindable. No stemming, no stop words: Roman
+    text legitimately contains tokens like "so" and "man"."""
+    return re.findall(r"[a-z]+", text.lower().replace("(n)", "n"))
+
+
+def english_words(text: str) -> list[str]:
+    """English-layer tokens: stop-word filtered and stemmed. The stemmer is
+    English-only and must never touch Roman queries or Roman corpus text."""
+    return [stem(w) for w in re.findall(r"[a-z]+", text.lower())
+            if w not in ENGLISH_STOPWORDS]
+
+
+def expand_roman_query(query: str) -> list[list[str]]:
+    """Build Roman query positions from the normalization table.
+
+    Order matters (reviewed rule): exact phrase aliases are recognized on
+    contiguous token windows BEFORE any per-token alias or expansion runs, so
+    "ik onkar" cannot be split and transformed token-by-token first. Token
+    expansions (satnam -> sat, naam) create separate required positions,
+    never alternatives. Each returned position is a list of OR-alternatives;
+    positions are AND."""
+    tokens: list = roman_words(query)
+    for pk in sorted(NORMALIZATION.get("phrase_aliases", {}), key=len, reverse=True):
+        key_toks = pk.split(" ")
+        i = 0
+        while i + len(key_toks) <= len(tokens):
+            window = tokens[i:i + len(key_toks)]
+            if all(isinstance(w, str) for w in window) and window == key_toks:
+                tokens[i:i + len(key_toks)] = [tuple(NORMALIZATION["phrase_aliases"][pk])]
+            i += 1
+    positions: list[list[str]] = []
+    for tok in tokens:
+        if isinstance(tok, tuple):
+            positions.append(list(tok))
+            continue
+        expansion = NORMALIZATION.get("token_expansions", {}).get(tok)
+        if expansion:
+            positions.extend([[t] for t in expansion])
+            continue
+        positions.append(list(NORMALIZATION.get("token_aliases", {}).get(tok, [tok])))
+    return positions
+
+
+def _token_sequence_in_line(input_tokens: list[str], line_tokens: list[str]) -> bool:
+    """Boundary-respecting containment for verification: the complete
+    submitted phrase must appear as a contiguous token sequence within the
+    corpus line. Replaces raw substring tests in both directions; reverse
+    containment (a short corpus line found inside the input, e.g. "rad"
+    inside "a-rad-aas") is removed entirely per review."""
+    n = len(input_tokens)
+    if n == 0:
+        return False
+    for s in range(len(line_tokens) - n + 1):
+        if line_tokens[s:s + n] == input_tokens:
+            return True
+    return False
+
+
+def in_order_bonus_alts(positions: list[list[str]], verse_tokens: list[str]) -> int:
+    """In-order bonus where each query position is a list of OR-alternatives."""
+    if len(positions) < 2:
+        return 0
+    pos = -1
+    matched = 0
+    for alts in positions:
+        found = -1
+        for j in range(pos + 1, len(verse_tokens)):
+            if verse_tokens[j] in alts:
+                found = j
+                break
+        if found == -1:
+            continue
+        pos = found
+        matched += 1
+    if matched == len(positions):
+        return 3
+    if matched >= 2:
+        return 1
+    return 0
 
 
 def in_order_bonus(query_stems: list[str], verse_stems: list[str]) -> int:
@@ -283,24 +390,22 @@ def build_index():
         }
         verses_by_ang[ang_num] = verses
 
-        # Build word index from English and transliteration (both raw and stemmed)
-        for verse in verses:
-            raw_words = set()
-            for field in ("english", "transliteration"):
-                raw_words.update(searchable_words(verse.get(field, "")))
+        # Split-layer indexing: English stems and Roman tokens never mix.
+        # verse_index is the per-ang ordinal, unique within the ang (the old
+        # (ang, line) key collided because LINE markers repeat within an ang).
+        for ordinal, verse in enumerate(verses, start=1):
+            verse["verse_index"] = ordinal
+            key = (ang_num, ordinal)
 
-            # Store raw words for per-verse scoring
-            verse_words[(ang_num, verse["line"])] = raw_words
+            eng = set(english_words(verse.get("english", "")))
+            rom = set(roman_words(verse.get("transliteration", "")))
+            english_verse_words[key] = eng
+            roman_verse_words[key] = rom
 
-            # Index both raw words and their stems
-            all_forms = set()
-            for w in raw_words:
-                all_forms.add(w)
-                all_forms.add(stem(w))
-            for word in all_forms:
-                if word not in word_index:
-                    word_index[word] = set()
-                word_index[word].add(ang_num)
+            for word in eng:
+                english_word_index.setdefault(word, set()).add(ang_num)
+            for word in rom:
+                roman_word_index.setdefault(word, set()).add(ang_num)
 
     print(f"Indexed {len(metadata)} angs, {sum(len(v) for v in verses_by_ang.values())} verses", file=sys.stderr)
 
@@ -386,61 +491,59 @@ def _phrase_search(query_lower: str, fields: list[str], limit: int) -> list[dict
 
 
 def _word_search(query_lower: str, fields: list[str], limit: int) -> list[dict]:
-    """Word intersection search using the word index, with relevance scoring.
+    """Two-layer word search. Roman positions (normalization-table
+    OR-alternatives, AND across positions) match Roman tokens; stemmed English
+    tokens match the English layer. A verse matches if either requested layer
+    completes on its own; layers are never blended, so English stems cannot
+    collide with Roman words (the "Tu dayal" defect class)."""
+    roman_active = "transliteration" in fields
+    english_active = "english" in fields
 
-    Finds verses containing the most query words (stemmed). Results are ranked
-    by the number of matching words, so the best matches come first."""
-    query_words = searchable_words(query_lower)
-    if not query_words:
+    roman_positions = expand_roman_query(query_lower) if roman_active else []
+    eng_stems = english_words(query_lower) if english_active else []
+
+    if not roman_positions and not eng_stems:
         return []
 
-    # Stem query words and look up each in the index
-    query_stems = [stem(w) for w in query_words]
-
-    # Find candidate angs: any ang that has at least one query word
+    # Candidate angs: any ang containing any alternative of any position
     candidate_angs: set[int] = set()
-    for qs in query_stems:
-        candidate_angs.update(word_index.get(qs, set()))
-
+    for alts in roman_positions:
+        for alt in alts:
+            candidate_angs.update(roman_word_index.get(alt, set()))
+    for qs in eng_stems:
+        candidate_angs.update(english_word_index.get(qs, set()))
     if not candidate_angs:
         return []
 
-    # Score each verse in candidate angs by how many query stems it matches
     scored: list[tuple[int, int, dict, int]] = []  # (rank, score, verse, ang_num)
-
     for ang_num in candidate_angs:
         for verse in verses_by_ang.get(ang_num, []):
-            # Get the words in this verse (raw + stemmed)
-            raw = verse_words.get((ang_num, verse["line"]), set())
-            stemmed = {stem(w) for w in raw}
+            key = (ang_num, verse["verse_index"])
+            rank = 0
+            score = 0
 
-            # Check field filter: if searching only English, skip verses
-            # where the match is only in transliteration
-            if fields != ["english", "transliteration", "gurmukhi"] and fields != []:
-                text = ""
-                for f in fields:
-                    text += " " + verse.get(f, "").lower()
-                verse_field_stems_list = stemmed_words(text)
-                verse_field_stems = set(verse_field_stems_list)
-                score = sum(1 for qs in query_stems if qs in verse_field_stems)
-                order_bonus = in_order_bonus(query_stems, verse_field_stems_list)
-            else:
-                score = sum(1 for qs in query_stems if qs in stemmed)
-                text = " ".join(
-                    verse.get(f, "")
-                    for f in ("english", "transliteration")
-                )
-                order_bonus = in_order_bonus(query_stems, stemmed_words(text))
+            if roman_positions:
+                rset = roman_verse_words.get(key, set())
+                if all(any(alt in rset for alt in alts) for alts in roman_positions):
+                    rlist = roman_words(verse.get("transliteration", ""))
+                    rank = (len(roman_positions) * 10) + in_order_bonus_alts(roman_positions, rlist)
+                    score = len(roman_positions)
 
-            if score > 0:
-                if len(query_stems) > 1 and score < len(query_stems):
-                    continue
-                exact_bonus = 5 if query_lower in verse.get("english", "").lower() else 0
-                rank = (score * 10) + order_bonus + exact_bonus
+            if eng_stems:
+                eset = english_verse_words.get(key, set())
+                if all(qs in eset for qs in eng_stems):
+                    elist = english_words(verse.get("english", ""))
+                    exact_bonus = 5 if query_lower in verse.get("english", "").lower() else 0
+                    e_rank = (len(eng_stems) * 10) + in_order_bonus(eng_stems, elist) + exact_bonus
+                    if e_rank > rank:
+                        rank = e_rank
+                        score = len(eng_stems)
+
+            if rank > 0:
                 scored.append((rank, score, verse, ang_num))
 
-    # Sort by score descending, then by ang number ascending for stability
-    scored.sort(key=lambda x: (-x[0], x[3], x[2]["line"]))
+    # Sort by rank descending, then by ang and verse ordinal for stability
+    scored.sort(key=lambda x: (-x[0], x[3], x[2]["verse_index"]))
 
     results = []
     for rank, score, verse, ang_num in scored[:limit]:
@@ -449,7 +552,7 @@ def _word_search(query_lower: str, fields: list[str], limit: int) -> list[dict]:
             "author": metadata[ang_num]["author"],
             "raag": metadata[ang_num]["raag"],
             "score": score,
-            "matched_of": len(query_stems),
+            "matched_of": score,
             **verse,
         })
 
@@ -860,10 +963,13 @@ def _verify_gurmukhi(text: str) -> dict:
             "closest_matches": exact_matches[:5],
         }
 
-    # Pass 2: substring match (the claimed text appears within a verse, or vice versa)
+    # Pass 2: token-sequence match. The claimed text must appear as a
+    # contiguous, boundary-respecting token sequence within a verse. Reverse
+    # containment (verse inside input) removed per review.
     substring_matches = []
+    _input_toks = normalized.split()
     for g, ang_num, line, verse in _gurmukhi_index:
-        if normalized in g or g in normalized:
+        if _token_sequence_in_line(_input_toks, g.split()):
             substring_matches.append(_verify_match(ang_num, line, verse))
 
     if len(substring_matches) == 1:
@@ -932,7 +1038,9 @@ def _verify_english(text: str) -> dict:
         e_clean = _normalize_english_verification_text(e)
         if e_clean == text_clean:
             exact_matches.append(_verify_match(ang_num, line, verse))
-        elif text_clean in e_clean or e_clean in text_clean:
+        elif _token_sequence_in_line(words, re.findall(r"[a-z0-9]+", e_clean)):
+            # Boundary-respecting token sequence only. Reverse containment
+            # (a short corpus line inside the input) removed per review.
             matches.append(_verify_match(ang_num, line, verse))
 
     if len(exact_matches) == 1:
@@ -1013,7 +1121,14 @@ def _verify_transliteration(text: str) -> dict:
                 continue
             if translit_clean == text_clean:
                 exact_matches.append(_verify_match(ang_num, verse["line"], verse))
-            elif text_clean in translit_clean or translit_clean in text_clean:
+            elif _token_sequence_in_line(
+                re.findall(r"[a-z]+", text_clean),
+                re.findall(r"[a-z]+", translit_clean),
+            ):
+                # Boundary-respecting token sequence only. Reverse containment
+                # (a short corpus line inside the input, e.g. "rad" inside
+                # "a-rad-aas") removed per review; the old <10 length guard
+                # merely hid that defect for short lines.
                 matches.append(_verify_match(ang_num, verse["line"], verse))
 
     if len(exact_matches) == 1:

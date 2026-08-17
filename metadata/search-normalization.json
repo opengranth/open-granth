@@ -1,0 +1,167 @@
+{
+  "_contract": "Alias target arrays are exhaustive alternatives for that query position. Alternatives are OR; separate query positions are AND; every required position must be satisfied within one text layer. Tokenization: lowercase, replace (n) with n, split [a-z]+. English stemming never touches Roman queries or Roman corpus text.",
+  "token_aliases": {
+    "tu": [
+      "tu",
+      "too",
+      "toon"
+    ],
+    "dayal": [
+      "daiaal"
+    ],
+    "dayaal": [
+      "dayaal",
+      "daiaal"
+    ],
+    "ardas": [
+      "aradaas"
+    ],
+    "ardaas": [
+      "aradaas"
+    ],
+    "waheguru": [
+      "vaahiguroo"
+    ],
+    "wahiguru": [
+      "vaahiguroo"
+    ],
+    "vaheguru": [
+      "vaahiguroo"
+    ],
+    "vahiguru": [
+      "vaahiguroo"
+    ],
+    "simran": [
+      "simaran"
+    ],
+    "kirpa": [
+      "kirapaa"
+    ],
+    "kirpaa": [
+      "kirapaa"
+    ],
+    "pyar": [
+      "piaar"
+    ],
+    "piar": [
+      "piaar"
+    ],
+    "pyaar": [
+      "piaar"
+    ],
+    "guru": [
+      "guroo"
+    ],
+    "nanak": [
+      "naanak"
+    ],
+    "shabad": [
+      "sabad"
+    ],
+    "shabd": [
+      "sabad"
+    ],
+    "seva": [
+      "sevaa"
+    ],
+    "sewa": [
+      "sevaa"
+    ],
+    "prabhu": [
+      "prabh",
+      "prabhoo"
+    ],
+    "akal": [
+      "akal",
+      "akaal"
+    ],
+    "karma": [
+      "karam"
+    ],
+    "dharma": [
+      "dharam"
+    ],
+    "amrit": [
+      "anmrit"
+    ],
+    "bani": [
+      "baanee"
+    ],
+    "kirtan": [
+      "keeratan"
+    ],
+    "darshan": [
+      "darasan"
+    ],
+    "satguru": [
+      "satigur",
+      "satiguroo"
+    ],
+    "satgur": [
+      "satigur",
+      "satiguroo"
+    ],
+    "onkar": [
+      "oankaar",
+      "ikoankaar"
+    ],
+    "oankar": [
+      "oankaar",
+      "ikoankaar"
+    ],
+    "onkaar": [
+      "oankaar",
+      "ikoankaar"
+    ],
+    "ram": [
+      "ram",
+      "raam"
+    ],
+    "allah": [
+      "alahu",
+      "alah"
+    ],
+    "mehl": [
+      "mahalaa"
+    ],
+    "mehla": [
+      "mahalaa"
+    ],
+    "anand": [
+      "anand",
+      "aanand"
+    ]
+  },
+  "phrase_aliases": {
+    "ik onkar": [
+      "ikoankaar"
+    ],
+    "ik onkaar": [
+      "ikoankaar"
+    ],
+    "ik oankar": [
+      "ikoankaar"
+    ],
+    "ik oankaar": [
+      "ikoankaar"
+    ],
+    "ek onkar": [
+      "ikoankaar"
+    ],
+    "ek onkaar": [
+      "ikoankaar"
+    ],
+    "ek oankar": [
+      "ikoankaar"
+    ],
+    "ek oankaar": [
+      "ikoankaar"
+    ]
+  },
+  "token_expansions": {
+    "satnam": [
+      "sat",
+      "naam"
+    ]
+  }
+}

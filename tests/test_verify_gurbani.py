@@ -21,6 +21,8 @@ sys.path.insert(0, str(REPO / "mcp"))
 sys.path.insert(1, str(REPO))
 
 from scripts.transliteration import transliterate_gurmukhi
+import json
+
 from server import _english_index, search_gurbani, verify_gurbani, verses_by_ang
 
 
@@ -241,3 +243,22 @@ def test_generated_romanization_verifies_back_to_same_ang(expected_ang, gurmukhi
 
     assert generated == expected_roman
     assert_status(generated, "verified", script="transliteration", ang=expected_ang)
+
+
+def test_reverse_containment_removed_ih_aradaas_sole_result_ang_747():
+    """'ih aradaas hamaaree' has exactly one boundary-respecting token-sequence
+    occurrence: Ang 747. The old reverse-containment branch also returned Ang
+    1399 because its short corpus line 'rad' occurs inside 'a-rad-aas'."""
+    result = assert_status("ih aradaas hamaaree", "verified", script="transliteration", ang=747)
+    dumped = json.dumps(result)
+    assert "1399" not in dumped, f"Ang 1399 reverse-containment match returned: {dumped[:300]}"
+
+
+def test_token_sequence_requires_word_boundaries():
+    # 'rad' alone is a genuine short corpus line (Ang 1399); as a whole-line
+    # exact match it may verify, but it must never be reported as contained
+    # inside unrelated words. 'aradaas hamaaree' contains no line 'rad' by
+    # token-sequence rules and must resolve within Ang 747 only.
+    result = verify_gurbani("aradaas hamaaree", script="transliteration")
+    dumped = json.dumps(result)
+    assert "1399" not in dumped, f"mid-word containment returned Ang 1399: {dumped[:300]}"

@@ -231,7 +231,12 @@ def build_site(
     (site_dir / "about").mkdir(parents=True, exist_ok=True)
     (site_dir / "about" / "index.html").write_text(about_template.render(**source_profile), encoding="utf-8")
     (site_dir / "search").mkdir(parents=True, exist_ok=True)
-    (site_dir / "search" / "index.html").write_text(search_template.render(**source_profile), encoding="utf-8")
+    # Search normalization table: single machine-readable source shared with the
+    # MCP server (metadata/search-normalization.json) so the two surfaces cannot drift.
+    normalization_path = Path(__file__).resolve().parent.parent / "metadata" / "search-normalization.json"
+    normalization_json = json.dumps(json.loads(normalization_path.read_text(encoding="utf-8")), ensure_ascii=True, separators=(",", ":"))
+    (site_dir / "search" / "index.html").write_text(
+        search_template.render(**source_profile, normalization_json=normalization_json), encoding="utf-8")
     # Top-level 404.html: without it Cloudflare Pages treats the site as an
     # SPA and serves the homepage with HTTP 200 for unknown URLs.
     (site_dir / "404.html").write_text(notfound_template.render(**source_profile), encoding="utf-8")

@@ -189,13 +189,22 @@
         return word;
     }
 
-    function searchWords(text) {
+    /* English-layer tokens: stop-word filtered and stemmed. The stemmer is
+       English-only and must never touch Roman queries or Roman corpus text. */
+    function englishTokens(text) {
         var raw = (text || '').toLowerCase().match(/[a-z]+/g) || [];
         var words = [];
         for (var i = 0; i < raw.length; i++) {
             if (!STOP_WORDS[raw[i]]) words.push(stem(raw[i]));
         }
         return words;
+    }
+
+    /* Roman-layer tokens: the scheme writes nasals as (n), e.g. a(n)mrit.
+       Replace (n) with n (never delete it) before tokenizing, or words like
+       anmrit and gobind are unfindable. No stemming, no stop words. */
+    function romanTokens(text) {
+        return ((text || '').toLowerCase().replace(/\(n\)/g, 'n').match(/[a-z]+/g)) || [];
     }
 
     function containsProfaneWords(text) {
@@ -255,35 +264,75 @@
         return 0;
     }
 
-    function scoreVerse(v, q, ql, queryWords) {
+    /* In-order bonus for Roman positions, where each position is a list of
+       OR-alternatives from the normalization table. */
+    function inOrderBonusAlts(positions, verseTokens) {
+        if (positions.length < 2) return 0;
+        var pos = -1;
+        var matched = 0;
+        for (var i = 0; i < positions.length; i++) {
+            var found = -1;
+            for (var j = pos + 1; j < verseTokens.length && found === -1; j++) {
+                for (var a = 0; a < positions[i].length; a++) {
+                    if (verseTokens[j] === positions[i][a]) { found = j; break; }
+                }
+            }
+            if (found === -1) continue;
+            pos = found;
+            matched++;
+        }
+        if (matched === positions.length) return 3;
+        if (matched >= 2) return 1;
+        return 0;
+    }
+
+    /* Two independent layer matches. Roman positions are OR-alternative lists
+       (from the normalization table); positions are AND. English tokens are
+       stemmed and must all match the stemmed English layer. A verse scores if
+       either layer completes on its own; layers are never blended, so English
+       stems can no longer collide with Roman words (the "Tu dayal" defect). */
+    function scoreVerse(v, q, ql, romanPositions, engTokens) {
         var english = (v.english || '').toLowerCase();
         var translit = (v.transliteration || '').toLowerCase();
         if (english.indexOf(ql) !== -1 || translit.indexOf(ql) !== -1 || (v.gurmukhi || '').indexOf(q) !== -1) {
             return 1000;
         }
-        /* Word spacing varies between transliteration conventions (the corpus
-           writes "ikOankaar" where readers type "ik oankaar"), so retry the
-           phrase match with spaces removed on both sides. */
-        var translitSquashed = translit.replace(/ /g, '');
-        if (ql.indexOf(' ') !== -1 && translitSquashed.indexOf(ql.replace(/ /g, '')) !== -1) {
-            return 1000;
-        }
-        if (queryWords.length === 0) return 0;
 
-        var verseWords = searchWords((v.english || '') + ' ' + (v.transliteration || ''));
-        var seen = {};
-        for (var i = 0; i < verseWords.length; i++) seen[verseWords[i]] = true;
+        var score = 0;
 
-        var matched = 0;
-        for (var j = 0; j < queryWords.length; j++) {
-            /* A word also counts if it appears inside the space-squashed
-               transliteration, so "oankaar" finds "ikOankaar" and "satnaam"
-               finds "sat naam". */
-            if (seen[queryWords[j]] || (queryWords[j].length >= 4 && translitSquashed.indexOf(queryWords[j]) !== -1)) matched++;
+        if (romanPositions.length > 0) {
+            var rlist = romanTokens(v.transliteration || '');
+            var rset = {};
+            for (var i = 0; i < rlist.length; i++) rset[rlist[i]] = true;
+            var allRoman = true;
+            for (var p = 0; p < romanPositions.length; p++) {
+                var alts = romanPositions[p];
+                var hit = false;
+                for (var a = 0; a < alts.length; a++) {
+                    if (rset[alts[a]]) { hit = true; break; }
+                }
+                if (!hit) { allRoman = false; break; }
+            }
+            if (allRoman) {
+                score = (romanPositions.length * 10) + inOrderBonusAlts(romanPositions, rlist);
+            }
         }
-        if (matched === 0) return 0;
-        if (queryWords.length > 1 && matched < queryWords.length) return 0;
-        return (matched * 10) + inOrderBonus(queryWords, verseWords);
+
+        if (engTokens.length > 0) {
+            var elist = englishTokens(v.english || '');
+            var eset = {};
+            for (var k = 0; k < elist.length; k++) eset[elist[k]] = true;
+            var allEnglish = true;
+            for (var m = 0; m < engTokens.length; m++) {
+                if (!eset[engTokens[m]]) { allEnglish = false; break; }
+            }
+            if (allEnglish) {
+                var eScore = (engTokens.length * 10) + inOrderBonus(engTokens, elist);
+                if (eScore > score) score = eScore;
+            }
+        }
+
+        return score;
     }
 
     function renderResults(matches, q) {
@@ -334,27 +383,57 @@
         resultsDiv.appendChild(frag);
     }
 
-    /* Common spellings mapped to the corpus transliteration scheme. Keep this
-       list short and verified against the corpus; every value must actually
-       occur in verses.json. */
-    var QUERY_ALIASES = {
-        'waheguru': 'vaahiguroo',
-        'vaheguru': 'vaahiguroo',
-        'vahiguru': 'vaahiguroo',
-        'satnam': 'sat naam'
-    };
+    /* Common-spelling normalization table. Single machine-readable source at
+       metadata/search-normalization.json, shared with the MCP server and
+       injected at build time; do not edit inline. Contract: alternatives are
+       OR within a position, positions are AND, all positions must be
+       satisfied within one text layer. */
+    var NORMALIZATION = {"_contract":"Alias target arrays are exhaustive alternatives for that query position. Alternatives are OR; separate query positions are AND; every required position must be satisfied within one text layer. Tokenization: lowercase, replace (n) with n, split [a-z]+. English stemming never touches Roman queries or Roman corpus text.","token_aliases":{"tu":["tu","too","toon"],"dayal":["daiaal"],"dayaal":["dayaal","daiaal"],"ardas":["aradaas"],"ardaas":["aradaas"],"waheguru":["vaahiguroo"],"wahiguru":["vaahiguroo"],"vaheguru":["vaahiguroo"],"vahiguru":["vaahiguroo"],"simran":["simaran"],"kirpa":["kirapaa"],"kirpaa":["kirapaa"],"pyar":["piaar"],"piar":["piaar"],"pyaar":["piaar"],"guru":["guroo"],"nanak":["naanak"],"shabad":["sabad"],"shabd":["sabad"],"seva":["sevaa"],"sewa":["sevaa"],"prabhu":["prabh","prabhoo"],"akal":["akal","akaal"],"karma":["karam"],"dharma":["dharam"],"amrit":["anmrit"],"bani":["baanee"],"kirtan":["keeratan"],"darshan":["darasan"],"satguru":["satigur","satiguroo"],"satgur":["satigur","satiguroo"],"onkar":["oankaar","ikoankaar"],"oankar":["oankaar","ikoankaar"],"onkaar":["oankaar","ikoankaar"],"ram":["ram","raam"],"allah":["alahu","alah"],"mehl":["mahalaa"],"mehla":["mahalaa"],"anand":["anand","aanand"]},"phrase_aliases":{"ik onkar":["ikoankaar"],"ik onkaar":["ikoankaar"],"ik oankar":["ikoankaar"],"ik oankaar":["ikoankaar"],"ek onkar":["ikoankaar"],"ek onkaar":["ikoankaar"],"ek oankar":["ikoankaar"],"ek oankaar":["ikoankaar"]},"token_expansions":{"satnam":["sat","naam"]}};
 
-    function applyAliases(ql) {
-        var words = ql.split(/\s+/);
-        for (var i = 0; i < words.length; i++) {
-            if (QUERY_ALIASES[words[i]]) words[i] = QUERY_ALIASES[words[i]];
+    /* Build Roman query positions. Order matters (reviewed rule): exact
+       phrase aliases are recognized on contiguous token windows BEFORE any
+       per-token alias or expansion runs, so "ik onkar" cannot be split and
+       transformed token-by-token first. Token expansions (satnam -> sat,
+       naam) create separate required positions, never alternatives. */
+    function expandRomanQuery(ql) {
+        var tokens = romanTokens(ql);
+        var phraseKeys = Object.keys(NORMALIZATION.phrase_aliases).sort(function(a, b) {
+            return b.length - a.length;
+        });
+        for (var p = 0; p < phraseKeys.length; p++) {
+            var keyToks = phraseKeys[p].split(' ');
+            for (var i = 0; i + keyToks.length <= tokens.length; i++) {
+                var isMatch = true;
+                for (var j = 0; j < keyToks.length; j++) {
+                    if (tokens[i + j] !== keyToks[j]) { isMatch = false; break; }
+                }
+                if (isMatch) {
+                    var replaced = [i, keyToks.length, { alts: NORMALIZATION.phrase_aliases[phraseKeys[p]] }];
+                    Array.prototype.splice.apply(tokens, replaced);
+                }
+            }
         }
-        return words.join(' ');
+        var positions = [];
+        for (var t = 0; t < tokens.length; t++) {
+            var tok = tokens[t];
+            if (typeof tok === 'object') {
+                positions.push(tok.alts.slice());
+                continue;
+            }
+            var expansion = NORMALIZATION.token_expansions[tok];
+            if (expansion) {
+                for (var e = 0; e < expansion.length; e++) positions.push([expansion[e]]);
+                continue;
+            }
+            var aliases = NORMALIZATION.token_aliases[tok];
+            positions.push(aliases ? aliases.slice() : [tok]);
+        }
+        return positions;
     }
 
     function doSearch() {
         var q = searchInput.value.trim();
-        var ql = applyAliases(q.toLowerCase());
+        var ql = q.toLowerCase();
 
         /* Update URL */
         var url = new URL(window.location);
@@ -372,11 +451,12 @@
             return;
         }
 
-        var queryWords = searchWords(ql);
+        var romanPositions = expandRomanQuery(ql);
+        var engTokens = englishTokens(ql);
         var scored = [];
         for (var i = 0; i < verses.length; i++) {
             var v = verses[i];
-            var score = scoreVerse(v, q, ql, queryWords);
+            var score = scoreVerse(v, q, ql, romanPositions, engTokens);
             if (score > 0) scored.push({ score: score, verse: v });
         }
         scored.sort(function(a, b) {
