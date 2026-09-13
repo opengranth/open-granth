@@ -41,6 +41,7 @@ DEFAULT_SOURCE_DIR = REPO / "corpus"
 DEFAULT_SITE_DIR = REPO / "site"
 DEFAULT_TEMPLATE_DIR = REPO / "templates"
 DEFAULT_ASSETS_DIR = REPO / "site"
+SEARCH_MAX_QUERY_LENGTH = 500
 
 
 # Paths inside site/ that this builder owns. On a clean build these are
@@ -235,8 +236,13 @@ def build_site(
     # MCP server (metadata/search-normalization.json) so the two surfaces cannot drift.
     normalization_path = Path(__file__).resolve().parent.parent / "metadata" / "search-normalization.json"
     normalization_json = json.dumps(json.loads(normalization_path.read_text(encoding="utf-8")), ensure_ascii=True, separators=(",", ":"))
+    worker_js = env.get_template("search-worker.js").render(
+        normalization_json=normalization_json, max_query_length=SEARCH_MAX_QUERY_LENGTH)
+    (site_dir / "search" / "search-worker.js").write_text(worker_js, encoding="utf-8")
+    worker_version = hashlib.sha256(worker_js.encode("utf-8")).hexdigest()[:12]
     (site_dir / "search" / "index.html").write_text(
-        search_template.render(**source_profile, normalization_json=normalization_json), encoding="utf-8")
+        search_template.render(**source_profile, worker_version=worker_version,
+                               max_query_length=SEARCH_MAX_QUERY_LENGTH), encoding="utf-8")
     # Top-level 404.html: without it Cloudflare Pages treats the site as an
     # SPA and serves the homepage with HTTP 200 for unknown URLs.
     (site_dir / "404.html").write_text(notfound_template.render(**source_profile), encoding="utf-8")

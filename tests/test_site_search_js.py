@@ -2,7 +2,7 @@
 """Regressions that execute the ACTUAL built site JavaScript.
 
 tests/site_js_harness.mjs loads the main script block from the built pages
-(site/search/index.html, site/verify/index.html) unmodified and drives the
+(site/search/search-worker.js, site/verify/index.html) unmodified and drives the
 page's own functions against the released verses.json, so these assertions
 cover the shipped browser code path, not a Python re-implementation.
 
@@ -119,3 +119,12 @@ def test_site_js_satnam_requires_contiguous_sat_naam():
 def test_site_js_plain_sat_naam_query_stays_unordered():
     result = run_harness("search", "sat naam")
     assert 33 in result["angs"]
+
+
+@pytest.mark.parametrize("script", ["search_worker_regression.mjs", "search_worker_lifecycle.mjs"])
+def test_search_worker(script):
+    proc = subprocess.run(
+        [NODE, str(REPO / "tests" / script)],
+        capture_output=True, text=True, timeout=180, cwd=REPO,
+    )
+    assert proc.returncode == 0, proc.stderr

@@ -1,8 +1,6 @@
-// Executes the ACTUAL built site JavaScript (site/search/index.html or
-// site/verify/index.html) against the released verses.json, outside a
-// browser. The page script runs unmodified inside a Function scope with
-// minimal DOM stubs; only the tiny driver below is harness code, mirroring
-// the page's own doSearch() loop. Used by tests/test_site_search_js.py.
+// Executes the built search worker engine or Verify page JavaScript against
+// the released corpus. Search lifecycle/protocol coverage is separately in
+// search_worker_lifecycle.mjs; this harness checks matching regressions.
 //
 // Usage:
 //   node tests/site_js_harness.mjs search "Tu dayal"
@@ -66,47 +64,32 @@ const pagePath = mode.startsWith('verify') ? 'site/verify/index.html' : 'site/se
 const html = readFileSync(join(repo, pagePath), 'utf8');
 const blocks = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
 // The main page script is the largest block (the others are theme/nav helpers).
-const code = blocks.reduce((a, b) => (b.length > a.length ? b : a), '');
+const code = mode === 'search' ? readFileSync(join(repo, 'site/search/search-worker.js'), 'utf8') : blocks.reduce((a, b) => (b.length > a.length ? b : a), '');
 
 const verses = JSON.parse(readFileSync(join(repo, 'site', 'data', 'verses.json'), 'utf8'));
 
-// Security note: the Function body below is the repository's own built page
+// Security note: the Function body below is the repository's own built
 // script (the same bytes a browser executes) plus the hardcoded hook literal
 // underneath. Nothing user-supplied is interpolated into the code string; the
 // CLI query is passed to the extracted functions as plain data arguments.
 let hooks;
 const hookLine = mode.startsWith('verify')
   ? ';__hooks({ tryTransliteration: tryTransliteration, tryEnglish: tryEnglish, verifyGurmukhi: verifyGurmukhi, cards: function () { return versesDiv.children; }, setVerses: function (v) { verses = v; } });'
-  : ';__hooks({ expandRomanQuery: expandRomanQuery, englishTokens: englishTokens, scoreVerse: scoreVerse, setVerses: function (v) { verses = v; } });';
+  : ';__hooks({ search: function(v, q) { return searchPrepared(v.map(prepareVerse), q); }, setVerses: function() {} });';
 
 new Function(
   'document', 'window', 'history', 'localStorage', 'fetch', 'URL',
-  'setTimeout', 'clearTimeout', '__hooks',
+  'setTimeout', 'clearTimeout', '__hooks', 'self',
   code + hookLine
 )(
   documentStub, windowStub, historyStub, localStorageStub, fetchStub, URLStub,
-  () => 0, () => {}, (h) => { hooks = h; }
+  () => 0, () => {}, (h) => { hooks = h; }, {}
 );
 
 hooks.setVerses(verses);
 
 if (mode === 'search') {
-  // Mirror of the page's doSearch() scoring loop, driving the page's own
-  // expandRomanQuery / englishTokens / scoreVerse unmodified.
-  const q = query.trim();
-  const ql = q.toLowerCase();
-  const romanPositions = hooks.expandRomanQuery(ql);
-  const engTokens = hooks.englishTokens(ql);
-  const scored = [];
-  for (const v of verses) {
-    const score = hooks.scoreVerse(v, q, ql, romanPositions, engTokens);
-    if (score > 0) scored.push({ score, verse: v });
-  }
-  scored.sort((a, b) => {
-    if (b.score !== a.score) return b.score - a.score;
-    if (a.verse.ang !== b.verse.ang) return a.verse.ang - b.verse.ang;
-    return (a.verse.verse_index || 0) - (b.verse.verse_index || 0);
-  });
+  const scored = hooks.search(verses, query);
   console.log(JSON.stringify({ angs: scored.map((s) => s.verse.ang), count: scored.length }));
 } else {
   // Route by mode: verify (Roman), verify-english, verify-gurmukhi.
